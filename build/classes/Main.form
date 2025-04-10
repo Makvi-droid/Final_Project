@@ -26,41 +26,46 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" alignment="0" groupAlignment="0" attributes="0">
-                      <Component id="jLabel1" alignment="0" min="-2" pref="69" max="-2" attributes="0"/>
-                      <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="yearLvl1" alignment="0" min="-2" pref="135" max="-2" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="studentIDtxt" min="-2" pref="171" max="-2" attributes="0"/>
-                          <Component id="studentFirstNametxt" min="-2" pref="171" max="-2" attributes="0"/>
-                          <Component id="studentMiddleNametxt" min="-2" pref="171" max="-2" attributes="0"/>
-                          <Component id="studentLastNametxt" min="-2" pref="171" max="-2" attributes="0"/>
-                          <Component id="yearLvl" alignment="0" min="-2" pref="135" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="236" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="jLabel7" min="-2" pref="73" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="searchBar" min="-2" pref="218" max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" min="-2" pref="885" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" alignment="0" groupAlignment="0" attributes="0">
+                              <Component id="jLabel1" alignment="0" min="-2" pref="69" max="-2" attributes="0"/>
+                              <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="addBtn" min="-2" pref="101" max="-2" attributes="0"/>
-                          <Component id="deleteBtn" min="-2" pref="101" max="-2" attributes="0"/>
-                          <Component id="updateBtn" min="-2" pref="101" max="-2" attributes="0"/>
-                          <Component id="sortBtn" min="-2" pref="101" max="-2" attributes="0"/>
+                          <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="yearLvl1" alignment="0" min="-2" pref="135" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="studentIDtxt" min="-2" pref="171" max="-2" attributes="0"/>
+                                  <Component id="studentFirstNametxt" min="-2" pref="171" max="-2" attributes="0"/>
+                                  <Component id="studentMiddleNametxt" min="-2" pref="171" max="-2" attributes="0"/>
+                                  <Component id="studentLastNametxt" min="-2" pref="171" max="-2" attributes="0"/>
+                                  <Component id="yearLvl" alignment="0" min="-2" pref="135" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="236" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="jLabel7" min="-2" pref="73" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="searchBar" min="-2" pref="218" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="addBtn" min="-2" pref="101" max="-2" attributes="0"/>
+                                  <Component id="deleteBtn" min="-2" pref="101" max="-2" attributes="0"/>
+                                  <Component id="updateBtn" min="-2" pref="101" max="-2" attributes="0"/>
+                                  <Component id="sortBtn" min="-2" pref="101" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="71" max="32767" attributes="0"/>
+              <EmptySpace pref="31" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -103,7 +108,9 @@
                   <Component id="jLabel6" min="-2" pref="27" max="-2" attributes="0"/>
                   <Component id="yearLvl1" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="293" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -207,5 +214,28 @@
         <Property name="text" type="java.lang.String" value="Sort"/>
       </Properties>
     </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTable" name="jTable1">
+          <Properties>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+              <Table columnCount="6" rowCount="4">
+                <Column editable="true" title="student_id" type="java.lang.Object"/>
+                <Column editable="true" title="student_first_name" type="java.lang.Object"/>
+                <Column editable="true" title="student_middle_name" type="java.lang.Object"/>
+                <Column editable="true" title="student_last_name" type="java.lang.Object"/>
+                <Column editable="true" title="year_level" type="java.lang.Object"/>
+                <Column editable="true" title="status" type="java.lang.Object"/>
+              </Table>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
   </SubComponents>
 </Form>
