@@ -99,6 +99,11 @@ public class Main extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         studentGradesBtn.setText("Student Grades");
+        studentGradesBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                studentGradesBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -183,6 +188,12 @@ public class Main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void studentGradesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studentGradesBtnActionPerformed
+        StudentGrades studentGrades = new StudentGrades();
+        studentGrades.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_studentGradesBtnActionPerformed
 
     /**
      * @param args the command line arguments
