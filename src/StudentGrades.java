@@ -470,7 +470,9 @@ public class StudentGrades extends javax.swing.JFrame {
     }//GEN-LAST:event_studentRecordsBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        // TODO add your handling code here:
+        Main main = new Main();
+        main.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
     /**
