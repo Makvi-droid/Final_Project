@@ -53,7 +53,7 @@ public class Main extends javax.swing.JFrame {
         updateBtn = new javax.swing.JButton();
         sortBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        studentTable = new javax.swing.JTable();
+        studentTabletest = new javax.swing.JTable();
         studentGradesBtn = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
 
@@ -86,7 +86,7 @@ public class Main extends javax.swing.JFrame {
 
         sortBtn.setText("Sort");
 
-        studentTable.setModel(new javax.swing.table.DefaultTableModel(
+        studentTabletest.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -97,12 +97,12 @@ public class Main extends javax.swing.JFrame {
                 "student_id", "student_first_name", "student_middle_name", "student_last_name", "year_level", "status"
             }
         ));
-        studentTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        studentTabletest.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                studentTableMouseClicked(evt);
+                studentTabletestMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(studentTable);
+        jScrollPane1.setViewportView(studentTabletest);
 
         studentGradesBtn.setText("Student Grades");
         studentGradesBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -210,9 +210,9 @@ public class Main extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_studentGradesBtnActionPerformed
 
-    private void studentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTableMouseClicked
+    private void studentTabletestMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTabletestMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_studentTableMouseClicked
+    }//GEN-LAST:event_studentTabletestMouseClicked
 
     /**
      * @param args the command line arguments
@@ -268,7 +268,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField studentIDtxt;
     private javax.swing.JTextField studentLastNametxt;
     private javax.swing.JTextField studentMiddleNametxt;
-    private javax.swing.JTable studentTable;
+    private javax.swing.JTable studentTabletest;
     private javax.swing.JButton updateBtn;
     private javax.swing.JComboBox<String> yearLvl;
     private javax.swing.JComboBox<String> yearLvl1;
