@@ -63,7 +63,7 @@ public class Main extends javax.swing.JFrame {
 
         jLabel2.setText("Student Middle Name:");
 
-        jLabel3.setText("Student First Name:");
+        jLabel3.setText("Student First & Second Name:");
 
         jLabel4.setText("Student Last Name:");
 
@@ -213,7 +213,9 @@ public class Main extends javax.swing.JFrame {
     private void studentTabletestMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTabletestMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_studentTabletestMouseClicked
-
+    
+    
+        
     /**
      * @param args the command line arguments
      */
