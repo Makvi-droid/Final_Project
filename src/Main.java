@@ -56,6 +56,8 @@ public class Main extends javax.swing.JFrame {
         studentTabletest = new javax.swing.JTable();
         studentGradesBtn = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        studentTabletest1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,6 +116,24 @@ public class Main extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         jLabel8.setText("Student Grade System");
 
+        studentTabletest1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "student_id", "student_first_name", "student_middle_name", "student_last_name", "year_level", "status"
+            }
+        ));
+        studentTabletest1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                studentTabletest1MouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(studentTabletest1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -153,7 +173,8 @@ public class Main extends javax.swing.JFrame {
                                     .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(sortBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(sortBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 885, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(31, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -164,7 +185,7 @@ public class Main extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -198,6 +219,8 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(studentGradesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -213,6 +236,10 @@ public class Main extends javax.swing.JFrame {
     private void studentTabletestMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTabletestMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_studentTabletestMouseClicked
+
+    private void studentTabletest1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTabletest1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_studentTabletest1MouseClicked
     
     
         
@@ -263,6 +290,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField searchBar;
     private javax.swing.JButton sortBtn;
     private javax.swing.JTextField studentFirstNametxt;
@@ -271,6 +299,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField studentLastNametxt;
     private javax.swing.JTextField studentMiddleNametxt;
     private javax.swing.JTable studentTabletest;
+    private javax.swing.JTable studentTabletest1;
     private javax.swing.JButton updateBtn;
     private javax.swing.JComboBox<String> yearLvl;
     private javax.swing.JComboBox<String> yearLvl1;
