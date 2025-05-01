@@ -3,10 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/ADMIN/Documents/NetBeansProjects/Student_Grading_System/src/StudentGrades.java</file>
             <file>file:/C:/Users/ADMIN/Documents/NetBeansProjects/Student_Grading_System/src/Main.java</file>
             <file>file:/C:/Users/ADMIN/Documents/NetBeansProjects/Student_Grading_System/src/Student_Records.java</file>
             <file>file:/C:/Users/ADMIN/Documents/NetBeansProjects/Student_Grading_System/src/SQLiteConnection.java</file>
+=======
+            <file>file:/C:/Users/user/Documents/CODES/netbeans/Final_Project/src/Main.java</file>
+>>>>>>> dd5abb97f456d658ebd4984d954ae838f8d04bd8
         </group>
     </open-files>
 </project-private>
