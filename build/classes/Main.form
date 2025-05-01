@@ -68,7 +68,6 @@
                           </Group>
                       </Group>
                   </Group>
-                  <Component id="jScrollPane2" min="-2" pref="885" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="31" max="32767" attributes="0"/>
           </Group>
@@ -123,9 +122,7 @@
               </Group>
               <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-              <Component id="jScrollPane2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -147,7 +144,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Student First &amp; Second Name:"/>
+        <Property name="text" type="java.lang.String" value="Student First Name:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="studentMiddleNametxt">
@@ -271,31 +268,5 @@
         <Property name="text" type="java.lang.String" value="Student Grade System"/>
       </Properties>
     </Component>
-    <Container class="javax.swing.JScrollPane" name="jScrollPane2">
-      <AuxValues>
-        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-      </AuxValues>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JTable" name="studentTabletest1">
-          <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="6" rowCount="4">
-                <Column editable="true" title="student_id" type="java.lang.Object"/>
-                <Column editable="true" title="student_first_name" type="java.lang.Object"/>
-                <Column editable="true" title="student_middle_name" type="java.lang.Object"/>
-                <Column editable="true" title="student_last_name" type="java.lang.Object"/>
-                <Column editable="true" title="year_level" type="java.lang.Object"/>
-                <Column editable="true" title="status" type="java.lang.Object"/>
-              </Table>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="studentTabletest1MouseClicked"/>
-          </Events>
-        </Component>
-      </SubComponents>
-    </Container>
   </SubComponents>
 </Form>
