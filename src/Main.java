@@ -350,7 +350,7 @@ public class Main extends javax.swing.JFrame {
         addStudent(student);
         addStudentToDatabase(student);
     }
-   
+   //added confirmation for delete action
    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {
         String studentId = studentIDtxt.getText();
         int confirmation = JOptionPane.showConfirmDialog(this,
@@ -363,6 +363,7 @@ public class Main extends javax.swing.JFrame {
             deleteStudentFromDatabase(studentId);
         }
     }
+   //added confirmation for update action
    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {
         String studentId = studentIDtxt.getText();
         String firstName = studentFirstNametxt.getText();
