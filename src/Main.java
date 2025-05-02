@@ -1,6 +1,44 @@
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+/**
+ * Student class to represent each student's data
+ */
+class Student {
+    private String studentId;
+    private String firstName;
+    private String middleName;
+    private String lastName;
+    private String yearLevel;
+    private String status;
+
+    public Student(String studentId, String firstName, String middleName, String lastName, String yearLevel, String status) {
+        this.studentId = studentId;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.yearLevel = yearLevel;
+        this.status = status;
+    }
+
+    // Getters and setters
+    public String getStudentId() { return studentId; }
+    public String getFirstName() { return firstName; }
+    public String getMiddleName() { return middleName; }
+    public String getLastName() { return lastName; }
+    public String getYearLevel() { return yearLevel; }
+    public String getStatus() { return status; }
+
+    public void setStudentId(String studentId) { this.studentId = studentId; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setMiddleName(String middleName) { this.middleName = middleName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setYearLevel(String yearLevel) { this.yearLevel = yearLevel; }
+    public void setStatus(String status) { this.status = status; }
+}
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -11,18 +49,32 @@ import java.awt.Toolkit;
  *
  * @author ADMIN
  */
-public class Main extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Main
-     */
+public class Main extends javax.swing.JFrame {
+    
+    private ArrayList<Student> studentArrayList = new ArrayList<>();
+    private int activeDataStructure = 1; 
     public Main() {
         initComponents();
-        
+        addEventHandlers();
         
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
-        setLocation(size.width/2 - getWidth()/2, size.height/2 - getHeight()/2);
+        setLocation(size.width / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
+        
+         updateTable();
+    }
+
+     private void addEventHandlers() {
+        addBtn.addActionListener(evt -> addBtnActionPerformed(evt));
+        deleteBtn.addActionListener(evt -> deleteBtnActionPerformed(evt));
+        updateBtn.addActionListener(evt -> updateBtnActionPerformed(evt));
+        sortBtn.addActionListener(evt -> sortBtnActionPerformed(evt));
+        searchBar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchBarKeyReleased(evt);
+            }
+        });
     }
 
     /**
@@ -209,47 +261,206 @@ public class Main extends javax.swing.JFrame {
         studentGrades.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_studentGradesBtnActionPerformed
+   private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {
+        String studentId = studentIDtxt.getText();
+        String firstName = studentFirstNametxt.getText();
+        String middleName = studentMiddleNametxt.getText();
+        String lastName = studentLastNametxt.getText();
+        String yearLevel = yearLvl.getSelectedItem().toString();
+        String status = yearLvl1.getSelectedItem().toString();
+
+        Student student = new Student(studentId, firstName, middleName, lastName, yearLevel, status);
+        addStudent(student);
+    }
+   
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {
+        String studentId = studentIDtxt.getText();
+        deleteStudent(studentId);
+    }
+    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {
+        String studentId = studentIDtxt.getText();
+        String firstName = studentFirstNametxt.getText();
+        String middleName = studentMiddleNametxt.getText();
+        String lastName = studentLastNametxt.getText();
+        String yearLevel = yearLvl.getSelectedItem().toString();
+        String status = yearLvl1.getSelectedItem().toString();
+
+        updateStudent(studentId, firstName, middleName, lastName, yearLevel, status);
+    }
+    
+    private void updateTable() {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Student ID");
+        model.addColumn("First Name");
+        model.addColumn("Middle Name");
+        model.addColumn("Last Name");
+        model.addColumn("Year Level");
+        model.addColumn("Status");
+
+        for (Student student : studentArrayList) {
+            model.addRow(new Object[]{
+                student.getStudentId(),
+                student.getFirstName(),
+                student.getMiddleName(),
+                student.getLastName(),
+                student.getYearLevel(),
+                student.getStatus()
+            });
+        }
+        studentTabletest.setModel(model); 
+    }
+    private void sortBtnActionPerformed(java.awt.event.ActionEvent evt) {
+        sortStudentsByLastName(); 
+    }
+     private void searchBarKeyReleased(java.awt.event.KeyEvent evt) {
+        String searchText = searchBar.getText().toLowerCase();
+        ArrayList<Student> filteredList = new ArrayList<>();
+
+        for (Student student : studentArrayList) {
+            if (student.getFirstName().toLowerCase().contains(searchText) ||
+                student.getLastName().toLowerCase().contains(searchText) ||
+                student.getStudentId().toLowerCase().contains(searchText)) {
+                filteredList.add(student);
+            }
+        }
+        updateTableWithFilteredList(filteredList); 
+}
+
+     
+    private void updateTableWithFilteredList(ArrayList<Student> filteredList) {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Student ID");
+        model.addColumn("First Name");
+        model.addColumn("Middle Name");
+        model.addColumn("Last Name");
+        model.addColumn("Year Level");
+        model.addColumn("Status");
+
+        for (Student student : filteredList) {
+            model.addRow(new Object[]{
+                student.getStudentId(),
+                student.getFirstName(),
+                student.getMiddleName(),
+                student.getLastName(),
+                student.getYearLevel(),
+                student.getStatus()
+            });
+    }
+    studentTabletest.setModel(model); 
+}
 
     private void studentTabletestMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTabletestMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_studentTabletestMouseClicked
+        int selectedRow = studentTabletest.getSelectedRow();
     
+        if (selectedRow != -1) {
+            studentIDtxt.setText(studentTabletest.getValueAt(selectedRow, 0).toString());
+            studentFirstNametxt.setText(studentTabletest.getValueAt(selectedRow, 1).toString());
+            studentMiddleNametxt.setText(studentTabletest.getValueAt(selectedRow, 2).toString());
+            studentLastNametxt.setText(studentTabletest.getValueAt(selectedRow, 3).toString());
+
+            String yearLevelValue = studentTabletest.getValueAt(selectedRow, 4).toString();
+            for (int i = 0; i < yearLvl.getItemCount(); i++) {
+                if (yearLvl.getItemAt(i).equals(yearLevelValue)) {
+                    yearLvl.setSelectedIndex(i);
+                    break;
+                }
+            }
+
+            String statusValue = studentTabletest.getValueAt(selectedRow, 5).toString();
+            for (int i = 0; i < yearLvl1.getItemCount(); i++) {
+                if (yearLvl1.getItemAt(i).equals(statusValue)) {
+                    yearLvl1.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+    }//GEN-LAST:event_studentTabletestMouseClicked
+     private void addStudent(Student student) {
+        studentArrayList.add(student);
+        updateTable(); 
+    }
+
+
+    private void deleteStudent(String studentId) {
+        studentArrayList.removeIf(student -> student.getStudentId().equals(studentId));
+        updateTable(); // Refresh the table after deleting
+    }
+
+     private void updateStudent(String studentId, String firstName, String middleName, String lastName, String yearLevel, String status) {
+        for (Student student : studentArrayList) {
+            if (student.getStudentId().equals(studentId)) {
+                student.setFirstName(firstName);
+                student.setMiddleName(middleName);
+                student.setLastName(lastName);
+                student.setYearLevel(yearLevel);
+                student.setStatus(status);
+                break;
+            }
+        }
+        updateTable(); // Refresh the table after updating
+    }
+    private void sortStudentsByLastName() {
+        quickSort(studentArrayList, 0, studentArrayList.size() - 1);
+        updateTable(); 
+    }
+    private void quickSort(ArrayList<Student> list, int low, int high) {
+     if (low < high) {
+         int pi = partition(list, low, high);
+         quickSort(list, low, pi - 1);
+         quickSort(list, pi + 1, high);
+        }
+    }
+
+    private int partition(ArrayList<Student> list, int low, int high) {
+        String pivot = list.get(high).getLastName(); 
+        int i = (low - 1);
+        for (int j = low; j < high; j++) {
+            if (list.get(j).getLastName().compareTo(pivot) < 0) {
+                i++;
+                // Swap
+                Student temp = list.get(i);
+                list.set(i, list.get(j));
+                list.set(j, temp);
+            }
+        }
+        // Swap the pivot element
+        Student temp = list.get(i + 1);
+        list.set(i + 1, list.get(high));
+        list.set(high, temp);
+        return i + 1;
+    }
+
+    private int binarySearch(String studentId) {
+        int low = 0;
+        int high = studentArrayList.size() - 1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (studentArrayList.get(mid).getStudentId().equals(studentId)) {
+                return mid; // Found
+            } else if (studentArrayList.get(mid).getStudentId().compareTo(studentId) < 0) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return -1; // Not found
+    }
     
         
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            // Set the look and feel to the system look and feel
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Main().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> new Main().setVisible(true));
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
