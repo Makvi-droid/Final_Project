@@ -4,6 +4,10 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 /**
  * Student class to represent each student's data
  */
@@ -76,6 +80,79 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
+    
+    private void loadStudentsFromDatabase() {
+        Connection conn = SQLiteConnection.getConnection();
+        if (conn != null) {
+            studentArrayList.clear();
+            String sql = "SELECT student_id, student_first_name, student_middle_name, student_last_name, year_level, status FROM students";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql);
+                 ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Student student = new Student(
+                            rs.getString("student_id"),
+                            rs.getString("student_first_name"),
+                            rs.getString("student_middle_name"),
+                            rs.getString("student_last_name"),
+                            rs.getString("year_level"),
+                            rs.getString("status")
+                    );
+                    studentArrayList.add(student);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void addStudentToDatabase(Student student) {
+        Connection conn = SQLiteConnection.getConnection();
+        if (conn != null) {
+            String sql = "INSERT INTO students (student_id, student_first_name, student_middle_name, student_last_name, year_level, status) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, student.getStudentId());
+                pstmt.setString(2, student.getFirstName());
+                pstmt.setString(3, student.getMiddleName());
+                pstmt.setString(4, student.getLastName());
+                pstmt.setString(5, student.getYearLevel());
+                pstmt.setString(6, student.getStatus());
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private void deleteStudentFromDatabase(String studentId) {
+        Connection conn = SQLiteConnection.getConnection();
+        if (conn != null) {
+            String sql = "DELETE FROM students WHERE student_id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, studentId);
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private void updateStudentInDatabase(Student student) {
+        Connection conn = SQLiteConnection.getConnection();
+        if (conn != null) {
+            String sql = "UPDATE students SET student_first_name = ?, student_middle_name = ?, student_last_name = ?, year_level = ?, status = ? WHERE student_id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, student.getFirstName());
+                pstmt.setString(2, student.getMiddleName());
+                pstmt.setString(3, student.getLastName());
+                pstmt.setString(4, student.getYearLevel());
+                pstmt.setString(5, student.getStatus());
+                pstmt.setString(6, student.getStudentId());
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -271,13 +348,22 @@ public class Main extends javax.swing.JFrame {
 
         Student student = new Student(studentId, firstName, middleName, lastName, yearLevel, status);
         addStudent(student);
+        addStudentToDatabase(student);
     }
    
-    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {
+   private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {
         String studentId = studentIDtxt.getText();
-        deleteStudent(studentId);
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete this student?",
+                "Delete Confirmation",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            deleteStudent(studentId);
+            deleteStudentFromDatabase(studentId);
+        }
     }
-    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {
+   private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {
         String studentId = studentIDtxt.getText();
         String firstName = studentFirstNametxt.getText();
         String middleName = studentMiddleNametxt.getText();
@@ -285,7 +371,15 @@ public class Main extends javax.swing.JFrame {
         String yearLevel = yearLvl.getSelectedItem().toString();
         String status = yearLvl1.getSelectedItem().toString();
 
-        updateStudent(studentId, firstName, middleName, lastName, yearLevel, status);
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to update this student?",
+                "Update Confirmation",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            updateStudent(studentId, firstName, middleName, lastName, yearLevel, status);
+            updateStudentInDatabase(new Student(studentId, firstName, middleName, lastName, yearLevel, status));
+        }
     }
     
     private void updateTable() {
