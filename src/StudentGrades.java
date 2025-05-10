@@ -2,8 +2,12 @@
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -550,7 +554,45 @@ public class StudentGrades extends javax.swing.JFrame {
     }//GEN-LAST:event_finalBtnActionPerformed
 
     private void recordsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_recordsMouseClicked
-        // TODO add your handling code here:
+        try(Connection connection = DriverManager.getConnection("jdbc:sqlite:.//database//studentInfo.db")){
+            
+            String query = "SELECT * FROM student";
+            try(PreparedStatement statement = connection.prepareStatement(query)){
+                ResultSet resultSet = statement.executeQuery();
+                
+                DefaultTableModel model = new DefaultTableModel();
+                
+                model.addColumn("student_id");
+                model.addColumn("student_first_name");
+                model.addColumn("student_middle_name");
+                model.addColumn("student_last_name");
+                model.addColumn("year_level");
+                model.addColumn("status");
+               
+                
+                while(resultSet.next()){
+                    
+                    String id = resultSet.getString("student_id");
+                    String empName = resultSet.getString("student_first_name");
+                    String department = resultSet.getString("student_middle_name");
+                    String salary = resultSet.getString("student_last_name");
+                    String schedule = resultSet.getString("year_level");
+                    String status = resultSet.getString("status");
+                   
+                    
+                    model.addRow(new Object[]{id, empName, department, salary, schedule, status});
+                    
+                }
+                
+                records.setModel(model);
+                
+            }
+            connection.close();
+            
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_recordsMouseClicked
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {
@@ -604,8 +646,7 @@ public class StudentGrades extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Student record registered successfully!", 
                                              "Success", JOptionPane.INFORMATION_MESSAGE);
                 
-                // Update the table display
-                updateRecordsTable();
+                
                 
                 // Clear the input fields
                 clearFields();
@@ -630,57 +671,7 @@ public class StudentGrades extends javax.swing.JFrame {
         }
     }
     
- // Method to update the records table with current database data
-    private void updateRecordsTable() {
-        Connection conn = null;
-        java.sql.PreparedStatement pstmt = null;
-        java.sql.ResultSet rs = null;
-        
-        try {
-            conn = SQLiteConnection.getConnection();
-            String sql = "SELECT student_id, student_first_name, student_middle_name, " +
-                         "student_last_name, year_level, status FROM student";
-            
-            pstmt = conn.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-            
-            // Create a DefaultTableModel to store the data
-            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(
-                new Object [][] {},
-                new String [] {
-                    "student_id", "student_first_name", "student_middle_name", 
-                    "student_last_name", "year_level", "status"
-                }
-            );
-            
-            // Populate the model with data from the database
-            while (rs.next()) {
-                model.addRow(new Object[]{
-                    rs.getString("student_id"),
-                    rs.getString("student_first_name"),
-                    rs.getString("student_middle_name"),
-                    rs.getString("student_last_name"),
-                    rs.getString("year_level"),
-                    rs.getString("status")
-                });
-            }
-            
-            // Set the model to the records table
-            records.setModel(model);
-            
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error loading records: " + ex.getMessage(), 
-                                         "Database Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
+ 
 
     // Method to clear input fields after successful registration
     private void clearFields() {

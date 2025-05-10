@@ -1,6 +1,13 @@
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -12,6 +19,10 @@ import java.awt.Toolkit;
  * @author ADMIN
  */
 public class Student_Records extends javax.swing.JFrame {
+    
+    private ArrayList<Student> studentArrayList = new ArrayList<>();
+     private int activeDataStructure = 1; 
+    private Connection connection;
 
     /**
      * Creates new form Student_Records
@@ -52,7 +63,7 @@ public class Student_Records extends javax.swing.JFrame {
         jLabel24 = new javax.swing.JLabel();
         backBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        studentGradesTable = new javax.swing.JTable();
         updateBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
 
@@ -90,7 +101,7 @@ public class Student_Records extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        studentGradesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null, null},
@@ -101,11 +112,26 @@ public class Student_Records extends javax.swing.JFrame {
                 "student_id", "student_first_name", "student_middle_name", "student_last_name", "year_level", "status", "prelim_grade", "midterm_grade", "finals_grade"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        studentGradesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                studentGradesTableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(studentGradesTable);
 
         updateBtn.setText("Update");
+        updateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setText("Delete");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -215,6 +241,164 @@ public class Student_Records extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_updateBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        String studentId = studentIDtxt.getText();
+        
+        if (studentId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select a student to delete.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete this student?",
+                "Delete Confirmation",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            try {
+                String sql = "DELETE FROM student WHERE student_id = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, studentId);
+                
+                int rowsAffected = preparedStatement.executeUpdate();
+                preparedStatement.close();
+                
+                if (rowsAffected > 0) {
+                    deleteStudent(studentId);
+                    
+                    // Clear input fields
+                    clearInputFields();
+                    
+                    JOptionPane.showMessageDialog(this, "Student deleted successfully!",
+                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Student not found in database.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (java.sql.SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error deleting student: " + e.getMessage(),
+                        "Database Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void deleteStudent(String studentId) {
+        studentArrayList.removeIf(student -> student.getStudentId().equals(studentId));
+        updateTable(); // Refresh the table after deleting
+    }
+    
+    private void quickSort(ArrayList<Student> list, int low, int high) {
+        if (low < high) {
+            int pi = partition(list, low, high);
+            quickSort(list, low, pi - 1);
+            quickSort(list, pi + 1, high);
+        }
+    }
+    
+    private int partition(ArrayList<Student> list, int low, int high) {
+        String pivot = list.get(high).getLastName(); 
+        int i = (low - 1);
+        for (int j = low; j < high; j++) {
+            if (list.get(j).getLastName().compareTo(pivot) < 0) {
+                i++;
+                // Swap
+                Student temp = list.get(i);
+                list.set(i, list.get(j));
+                list.set(j, temp);
+            }
+        }
+        // Swap the pivot element
+        Student temp = list.get(i + 1);
+        list.set(i + 1, list.get(high));
+        list.set(high, temp);
+        return i + 1;
+    }
+    
+    private void clearInputFields() {
+        studentIDtxt.setText("");
+        studentFirstNametxt.setText("");
+        studentMiddleNametxt.setText("");
+        studentLastNametxt.setText("");
+        yearLvl.setSelectedIndex(0);
+        yearLvl1.setSelectedIndex(0);
+    }
+    
+    private void updateTable() {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Student ID");
+        model.addColumn("First Name");
+        model.addColumn("Middle Name");
+        model.addColumn("Last Name");
+        model.addColumn("Year Level");
+        model.addColumn("Status");
+
+        for (Student student : studentArrayList) {
+            model.addRow(new Object[]{
+                student.getStudentId(),
+                student.getFirstName(),
+                student.getMiddleName(),
+                student.getLastName(),
+                student.getYearLevel(),
+                student.getStatus()
+            });
+        }
+        studentGradesTable.setModel(model); 
+    }
+    
+    private void studentGradesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentGradesTableMouseClicked
+         try(Connection connection = DriverManager.getConnection("jdbc:sqlite:.//database//studentInfo.db")){
+            
+            String query = "SELECT * FROM studentGrades";
+            try(PreparedStatement statement = connection.prepareStatement(query)){
+                ResultSet resultSet = statement.executeQuery();
+                
+                DefaultTableModel model = new DefaultTableModel();
+                
+                model.addColumn("student_id");
+                model.addColumn("student_first_name");
+                model.addColumn("student_middle_name");
+                model.addColumn("student_last_name");
+                model.addColumn("year_level");
+                model.addColumn("status");
+                model.addColumn("prelimGrade");
+                model.addColumn("midtermGrade");
+                model.addColumn("finalGrade");
+               
+                
+                while(resultSet.next()){
+                    
+                    String id = resultSet.getString("student_id");
+                    String empName = resultSet.getString("student_first_name");
+                    String department = resultSet.getString("student_middle_name");
+                    String salary = resultSet.getString("student_last_name");
+                    String schedule = resultSet.getString("year_level");
+                    String status = resultSet.getString("status");
+                    String prelimGrade = resultSet.getString("prelimGrade");
+                    String midtermGrade = resultSet.getString("midtermGrade");
+                    String finalGrade = resultSet.getString("finalGrade");
+                   
+                    
+                    model.addRow(new Object[]{id, empName, department, salary, schedule, status, prelimGrade, midtermGrade, finalGrade});
+                    
+                }
+                
+                studentGradesTable.setModel(model);
+                
+            }
+            connection.close();
+            
+        }
+        catch(java.sql.SQLException e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_studentGradesTableMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -264,10 +448,10 @@ public class Student_Records extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField midtermGrade;
     private javax.swing.JTextField prelimGrade;
     private javax.swing.JTextField studentFirstNametxt;
+    private javax.swing.JTable studentGradesTable;
     private javax.swing.JTextField studentIDtxt;
     private javax.swing.JTextField studentLastNametxt;
     private javax.swing.JTextField studentMiddleNametxt;
