@@ -25,7 +25,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="jScrollPane1" min="-2" pref="885" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -39,32 +39,32 @@
                           <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="yearLvl1" min="-2" pref="135" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="studentIDtxt" min="-2" pref="171" max="-2" attributes="0"/>
+                              <Component id="studentFirstNametxt" min="-2" pref="171" max="-2" attributes="0"/>
+                              <Component id="studentMiddleNametxt" min="-2" pref="171" max="-2" attributes="0"/>
+                              <Component id="studentLastNametxt" min="-2" pref="171" max="-2" attributes="0"/>
+                              <Component id="yearLvl" alignment="0" min="-2" pref="135" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="yearLvl1" min="-2" pref="135" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="164" pref="164" max="-2" attributes="0"/>
                               <Component id="studentGradesBtn" min="-2" pref="133" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="studentIDtxt" min="-2" pref="171" max="-2" attributes="0"/>
-                                  <Component id="studentFirstNametxt" min="-2" pref="171" max="-2" attributes="0"/>
-                                  <Component id="studentMiddleNametxt" min="-2" pref="171" max="-2" attributes="0"/>
-                                  <Component id="studentLastNametxt" min="-2" pref="171" max="-2" attributes="0"/>
-                                  <Component id="yearLvl" alignment="0" min="-2" pref="135" max="-2" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="jLabel7" min="-2" pref="73" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="searchBar" min="-2" pref="218" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="236" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="jLabel7" min="-2" pref="73" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="searchBar" min="-2" pref="218" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="addBtn" min="-2" pref="101" max="-2" attributes="0"/>
-                                  <Component id="deleteBtn" min="-2" pref="101" max="-2" attributes="0"/>
-                                  <Component id="updateBtn" min="-2" pref="101" max="-2" attributes="0"/>
-                                  <Component id="sortBtn" alignment="1" min="-2" pref="101" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="addBtn" min="-2" pref="101" max="-2" attributes="0"/>
+                              <Component id="deleteBtn" min="-2" pref="101" max="-2" attributes="0"/>
+                              <Component id="updateBtn" min="-2" pref="101" max="-2" attributes="0"/>
+                              <Component id="sortBtn" alignment="1" min="-2" pref="101" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -215,11 +215,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="updateBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Update"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="sortBtn">
       <Properties>

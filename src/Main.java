@@ -72,8 +72,7 @@ public class Main extends javax.swing.JFrame {
         // Get database connection
         connection = SQLiteConnection.getConnection();
         
-        // Create student table if it doesn't exist
-        createStudentTable();
+       
         
         // Load students from database
         loadStudentsFromDatabase();
@@ -81,24 +80,7 @@ public class Main extends javax.swing.JFrame {
         updateTable();  
     }
 
-    private void createStudentTable() {
-        try {
-            Statement statement = connection.createStatement();
-            String createTableSQL = "CREATE TABLE IF NOT EXISTS student (" +
-                    "student_id TEXT PRIMARY KEY, " +
-                    "student_first_name TEXT NOT NULL, " +
-                    "student_middle_name TEXT, " +
-                    "student_last_name TEXT NOT NULL, " +
-                    "year_level TEXT NOT NULL, " +
-                    "status TEXT NOT NULL)";
-            statement.execute(createTableSQL);
-            statement.close();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error creating student table: " + e.getMessage(),
-                    "Database Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-    }
+    
 
     private void loadStudentsFromDatabase() {
         studentArrayList.clear();
@@ -195,8 +177,18 @@ public class Main extends javax.swing.JFrame {
         addBtn.setText("Add");
 
         deleteBtn.setText("Delete");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         updateBtn.setText("Update");
+        updateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateBtnActionPerformed(evt);
+            }
+        });
 
         sortBtn.setText("Sort");
 
@@ -234,7 +226,7 @@ public class Main extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 885, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,28 +238,28 @@ public class Main extends javax.swing.JFrame {
                             .addComponent(jLabel5)
                             .addComponent(jLabel6))
                         .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(yearLvl1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(studentIDtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(studentFirstNametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(studentMiddleNametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(studentLastNametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(yearLvl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(yearLvl1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(164, 164, 164)
                                 .addComponent(studentGradesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(studentIDtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(studentFirstNametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(studentMiddleNametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(studentLastNametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(yearLvl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(236, 236, 236)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(sortBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(sortBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(31, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -388,104 +380,9 @@ public class Main extends javax.swing.JFrame {
         yearLvl1.setSelectedIndex(0);
     }
 
-    //added confirmation for delete action
-    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {
-        String studentId = studentIDtxt.getText();
-        
-        if (studentId.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please select a student to delete.",
-                    "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        int confirmation = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete this student?",
-                "Delete Confirmation",
-                JOptionPane.YES_NO_OPTION);
+   
 
-        if (confirmation == JOptionPane.YES_OPTION) {
-            try {
-                String sql = "DELETE FROM student WHERE student_id = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, studentId);
-                
-                int rowsAffected = preparedStatement.executeUpdate();
-                preparedStatement.close();
-                
-                if (rowsAffected > 0) {
-                    deleteStudent(studentId);
-                    
-                    // Clear input fields
-                    clearInputFields();
-                    
-                    JOptionPane.showMessageDialog(this, "Student deleted successfully!",
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Student not found in database.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Error deleting student: " + e.getMessage(),
-                        "Database Error", JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace();
-            }
-        }
-    }
-
-    //added confirmation for update action
-    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {
-        String studentId = studentIDtxt.getText();
-        String firstName = studentFirstNametxt.getText();
-        String middleName = studentMiddleNametxt.getText();
-        String lastName = studentLastNametxt.getText();
-        String yearLevel = yearLvl.getSelectedItem().toString();
-        String status = yearLvl1.getSelectedItem().toString();
-
-        // Data validation
-        if (studentId.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Student ID, First Name, and Last Name are required fields.",
-                    "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        int confirmation = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to update this student?",
-                "Update Confirmation",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirmation == JOptionPane.YES_OPTION) {
-            try {
-                String sql = "UPDATE student SET first_name = ?, middle_name = ?, last_name = ?, year_level = ?, status = ? WHERE student_id = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, firstName);
-                preparedStatement.setString(2, middleName);
-                preparedStatement.setString(3, lastName);
-                preparedStatement.setString(4, yearLevel);
-                preparedStatement.setString(5, status);
-                preparedStatement.setString(6, studentId);
-                
-                int rowsAffected = preparedStatement.executeUpdate();
-                preparedStatement.close();
-                
-                if (rowsAffected > 0) {
-                    updateStudent(studentId, firstName, middleName, lastName, yearLevel, status);
-                    
-                    // Clear input fields
-                    clearInputFields();
-                    
-                    JOptionPane.showMessageDialog(this, "Student updated successfully!",
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Student not found in database.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Error updating student: " + e.getMessage(),
-                        "Database Error", JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace();
-            }
-        }
-    }
+    
     
     private void updateTable() {
         DefaultTableModel model = new DefaultTableModel();
@@ -528,25 +425,25 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void updateTableWithFilteredList(ArrayList<Student> filteredList) {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Student ID");
-        model.addColumn("First Name");
-        model.addColumn("Middle Name");
-        model.addColumn("Last Name");
-        model.addColumn("Year Level");
-        model.addColumn("Status");
+    	  DefaultTableModel model = new DefaultTableModel();
+          model.addColumn("Student ID");
+          model.addColumn("First Name");
+          model.addColumn("Middle Name");
+          model.addColumn("Last Name");
+          model.addColumn("Year Level");
+          model.addColumn("Status");
 
-        for (Student student : filteredList) {
-            model.addRow(new Object[]{
-                student.getStudentId(),
-                student.getFirstName(),
-                student.getMiddleName(),
-                student.getLastName(),
-                student.getYearLevel(),
-                student.getStatus()
-            });
-        }
-        studentTable.setModel(model); 
+          for (Student student : studentArrayList) {
+              model.addRow(new Object[]{
+                  student.getStudentId(),
+                  student.getFirstName(),
+                  student.getMiddleName(),
+                  student.getLastName(),
+                  student.getYearLevel(),
+                  student.getStatus()
+              });
+          }
+          studentTable.setModel(model); 
     }
 
     private void studentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTableMouseClicked
@@ -575,6 +472,115 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_studentTableMouseClicked
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        String studentId = studentIDtxt.getText();
+        
+        if (studentId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select a student to delete.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete this student?",
+                "Delete Confirmation",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            try {
+                String sql = "DELETE FROM student WHERE student_id = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, studentId);
+                
+                int rowsAffected = preparedStatement.executeUpdate();
+                preparedStatement.close();
+                
+                if (rowsAffected > 0) {
+                    deleteStudent(studentId);
+                    
+                    // Clear input fields
+                    clearInputFields();
+                    
+                    JOptionPane.showMessageDialog(this, "Student deleted successfully!",
+                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Student not found in database.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error deleting student: " + e.getMessage(),
+                        "Database Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
+         String studentId = studentIDtxt.getText();
+         String firstName = studentFirstNametxt.getText();
+         String middleName = studentMiddleNametxt.getText();
+         String lastName = studentLastNametxt.getText();
+         String yearLevel = yearLvl.getSelectedItem().toString();
+         String status = yearLvl1.getSelectedItem().toString();
+
+         // Data validation
+         if (studentId.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
+             JOptionPane.showMessageDialog(this, "Student ID, First Name, and Last Name are required fields.",
+                     "Input Error", JOptionPane.ERROR_MESSAGE);
+             return;
+         }
+
+         int confirmation = JOptionPane.showConfirmDialog(this,
+                 "Are you sure you want to update this student?",
+                 "Update Confirmation",
+                 JOptionPane.YES_NO_OPTION);
+
+         if (confirmation == JOptionPane.YES_OPTION) {
+             try {
+                 String sql = "UPDATE student SET student_first_name = ?, student_middle_name = ?, student_last_name = ?, year_level = ?, status = ? WHERE student_id = ?";
+                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                 preparedStatement.setString(1, firstName);
+                 preparedStatement.setString(2, middleName);
+                 preparedStatement.setString(3, lastName);
+                 preparedStatement.setString(4, yearLevel);
+                 preparedStatement.setString(5, status);
+                 preparedStatement.setString(6, studentId);
+                 
+                 int rowsAffected = preparedStatement.executeUpdate();
+                 preparedStatement.close();
+                 
+                 if (rowsAffected > 0) {
+                     // Update the student in the ArrayList
+                     for (Student student : studentArrayList) {
+                         if (student.getStudentId().equals(studentId)) {
+                             student.setFirstName(firstName);
+                             student.setMiddleName(middleName);
+                             student.setLastName(lastName);
+                             student.setYearLevel(yearLevel);
+                             student.setStatus(status);
+                             break;
+                         }
+                     }
+                     
+                     updateTable();
+                     
+                     // Clear input fields
+                     clearInputFields();
+                     
+                     JOptionPane.showMessageDialog(this, "Student updated successfully!",
+                             "Success", JOptionPane.INFORMATION_MESSAGE);
+                 } else {
+                     JOptionPane.showMessageDialog(this, "Student not found in database.",
+                             "Error", JOptionPane.ERROR_MESSAGE);
+                 }
+             } catch (SQLException e) {
+                 JOptionPane.showMessageDialog(this, "Error updating student: " + e.getMessage(),
+                         "Database Error", JOptionPane.ERROR_MESSAGE);
+                 e.printStackTrace();
+             }
+         }
+    }//GEN-LAST:event_updateBtnActionPerformed
     
     private void addStudent(Student student) {
         studentArrayList.add(student);
