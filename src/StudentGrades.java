@@ -127,6 +127,11 @@ public class StudentGrades extends javax.swing.JFrame {
                 "student_id", "student_first_name", "student_middle_name", "student_last_name", "year_level", "status"
             }
         ));
+        records.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                recordsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(records);
 
         jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -543,6 +548,10 @@ public class StudentGrades extends javax.swing.JFrame {
             finalsGrade.setText("Invalid input!");
         }
     }//GEN-LAST:event_finalBtnActionPerformed
+
+    private void recordsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_recordsMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_recordsMouseClicked
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {
         // Get student information from text fields
