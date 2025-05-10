@@ -1,13 +1,14 @@
-
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.ArrayList;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 /**
  * Student class to represent each student's data
  */
@@ -58,6 +59,8 @@ public class Main extends javax.swing.JFrame {
     
     private ArrayList<Student> studentArrayList = new ArrayList<>();
     private int activeDataStructure = 1; 
+    private Connection connection;
+    
     public Main() {
         initComponents();
         addEventHandlers();
@@ -66,11 +69,65 @@ public class Main extends javax.swing.JFrame {
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
         
+        // Get database connection
+        connection = SQLiteConnection.getConnection();
+        
+        // Create student table if it doesn't exist
+        createStudentTable();
+        
+        // Load students from database
         loadStudentsFromDatabase();
+        
         updateTable();  
     }
 
-     private void addEventHandlers() {
+    private void createStudentTable() {
+        try {
+            Statement statement = connection.createStatement();
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS student (" +
+                    "student_id TEXT PRIMARY KEY, " +
+                    "student_first_name TEXT NOT NULL, " +
+                    "student_middle_name TEXT, " +
+                    "student_last_name TEXT NOT NULL, " +
+                    "year_level TEXT NOT NULL, " +
+                    "status TEXT NOT NULL)";
+            statement.execute(createTableSQL);
+            statement.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error creating student table: " + e.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void loadStudentsFromDatabase() {
+        studentArrayList.clear();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM student");
+            
+            while (resultSet.next()) {
+                String studentId = resultSet.getString("student_id");
+                String firstName = resultSet.getString("student_first_name");
+                String middleName = resultSet.getString("student_middle_name");
+                String lastName = resultSet.getString("student_last_name");
+                String yearLevel = resultSet.getString("year_level");
+                String status = resultSet.getString("status");
+                
+                Student student = new Student(studentId, firstName, middleName, lastName, yearLevel, status);
+                studentArrayList.add(student);
+            }
+            
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error loading students: " + e.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void addEventHandlers() {
         addBtn.addActionListener(evt -> addBtnActionPerformed(evt));
         deleteBtn.addActionListener(evt -> deleteBtnActionPerformed(evt));
         updateBtn.addActionListener(evt -> updateBtnActionPerformed(evt));
@@ -82,79 +139,6 @@ public class Main extends javax.swing.JFrame {
         });
     }
     
-    private void loadStudentsFromDatabase() {
-        Connection conn = SQLiteConnection.getConnection();
-        if (conn != null) {
-            studentArrayList.clear();
-            String sql = "SELECT student_id, student_first_name, student_middle_name, student_last_name, year_level, status FROM student";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql);
-                 ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    Student student = new Student(
-                            rs.getString("student_id"),
-                            rs.getString("student_first_name"),
-                            rs.getString("student_middle_name"),
-                            rs.getString("student_last_name"),
-                            rs.getString("year_level"),
-                            rs.getString("status")
-                    );
-                    studentArrayList.add(student);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    private void addStudentToDatabase(Student student) {
-        Connection conn = SQLiteConnection.getConnection();
-        if (conn != null) {
-            String sql = "INSERT INTO student (student_id, student_first_name, student_middle_name, student_last_name, year_level, status) VALUES (?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, student.getStudentId());
-                pstmt.setString(2, student.getFirstName());
-                pstmt.setString(3, student.getMiddleName());
-                pstmt.setString(4, student.getLastName());
-                pstmt.setString(5, student.getYearLevel());
-                pstmt.setString(6, student.getStatus());
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    private void deleteStudentFromDatabase(String studentId) {
-        Connection conn = SQLiteConnection.getConnection();
-        if (conn != null) {
-            String sql = "DELETE FROM student WHERE student_id = ?";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, studentId);
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    private void updateStudentInDatabase(Student student) {
-        Connection conn = SQLiteConnection.getConnection();
-        if (conn != null) {
-            String sql = "UPDATE student SET student_first_name = ?, student_middle_name = ?, student_last_name = ?, year_level = ?, status = ? WHERE student_id = ?";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, student.getFirstName());
-                pstmt.setString(2, student.getMiddleName());
-                pstmt.setString(3, student.getLastName());
-                pstmt.setString(4, student.getYearLevel());
-                pstmt.setString(5, student.getStatus());
-                pstmt.setString(6, student.getStudentId());
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -339,7 +323,8 @@ public class Main extends javax.swing.JFrame {
         studentGrades.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_studentGradesBtnActionPerformed
-   private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {
+
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {
         String studentId = studentIDtxt.getText();
         String firstName = studentFirstNametxt.getText();
         String middleName = studentMiddleNametxt.getText();
@@ -347,31 +332,121 @@ public class Main extends javax.swing.JFrame {
         String yearLevel = yearLvl.getSelectedItem().toString();
         String status = yearLvl1.getSelectedItem().toString();
 
-        Student student = new Student(studentId, firstName, middleName, lastName, yearLevel, status);
-        addStudent(student);
-        addStudentToDatabase(student);
+        // Data validation
+        if (studentId.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Student ID, First Name, and Last Name are required fields.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Check if student ID already exists
+        for (Student s : studentArrayList) {
+            if (s.getStudentId().equals(studentId)) {
+                JOptionPane.showMessageDialog(this, "Student ID already exists.",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        try {
+            String sql = "INSERT INTO student (student_id, student_first_name, student_middle_name, student_last_name, year_level, status) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, studentId);
+            preparedStatement.setString(2, firstName);
+            preparedStatement.setString(3, middleName);
+            preparedStatement.setString(4, lastName);
+            preparedStatement.setString(5, yearLevel);
+            preparedStatement.setString(6, status);
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            
+            if (rowsAffected > 0) {
+                Student student = new Student(studentId, firstName, middleName, lastName, yearLevel, status);
+                studentArrayList.add(student);
+                updateTable();
+                
+                // Clear input fields
+                clearInputFields();
+                
+                JOptionPane.showMessageDialog(this, "Student added successfully!",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error adding student: " + e.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
-   //added confirmation for delete action
-   private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {
+
+    private void clearInputFields() {
+        studentIDtxt.setText("");
+        studentFirstNametxt.setText("");
+        studentMiddleNametxt.setText("");
+        studentLastNametxt.setText("");
+        yearLvl.setSelectedIndex(0);
+        yearLvl1.setSelectedIndex(0);
+    }
+
+    //added confirmation for delete action
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {
         String studentId = studentIDtxt.getText();
+        
+        if (studentId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select a student to delete.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to delete this student?",
                 "Delete Confirmation",
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            deleteStudent(studentId);
-            deleteStudentFromDatabase(studentId);
+            try {
+                String sql = "DELETE FROM student WHERE student_id = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, studentId);
+                
+                int rowsAffected = preparedStatement.executeUpdate();
+                preparedStatement.close();
+                
+                if (rowsAffected > 0) {
+                    deleteStudent(studentId);
+                    
+                    // Clear input fields
+                    clearInputFields();
+                    
+                    JOptionPane.showMessageDialog(this, "Student deleted successfully!",
+                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Student not found in database.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error deleting student: " + e.getMessage(),
+                        "Database Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         }
     }
-   //added confirmation for update action
-   private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {
+
+    //added confirmation for update action
+    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {
         String studentId = studentIDtxt.getText();
         String firstName = studentFirstNametxt.getText();
         String middleName = studentMiddleNametxt.getText();
         String lastName = studentLastNametxt.getText();
         String yearLevel = yearLvl.getSelectedItem().toString();
         String status = yearLvl1.getSelectedItem().toString();
+
+        // Data validation
+        if (studentId.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Student ID, First Name, and Last Name are required fields.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         int confirmation = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to update this student?",
@@ -379,8 +454,36 @@ public class Main extends javax.swing.JFrame {
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            updateStudent(studentId, firstName, middleName, lastName, yearLevel, status);
-            updateStudentInDatabase(new Student(studentId, firstName, middleName, lastName, yearLevel, status));
+            try {
+                String sql = "UPDATE student SET first_name = ?, middle_name = ?, last_name = ?, year_level = ?, status = ? WHERE student_id = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, firstName);
+                preparedStatement.setString(2, middleName);
+                preparedStatement.setString(3, lastName);
+                preparedStatement.setString(4, yearLevel);
+                preparedStatement.setString(5, status);
+                preparedStatement.setString(6, studentId);
+                
+                int rowsAffected = preparedStatement.executeUpdate();
+                preparedStatement.close();
+                
+                if (rowsAffected > 0) {
+                    updateStudent(studentId, firstName, middleName, lastName, yearLevel, status);
+                    
+                    // Clear input fields
+                    clearInputFields();
+                    
+                    JOptionPane.showMessageDialog(this, "Student updated successfully!",
+                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Student not found in database.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error updating student: " + e.getMessage(),
+                        "Database Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         }
     }
     
@@ -405,10 +508,12 @@ public class Main extends javax.swing.JFrame {
         }
         studentTable.setModel(model); 
     }
+    
     private void sortBtnActionPerformed(java.awt.event.ActionEvent evt) {
         sortStudentsByLastName(); 
     }
-     private void searchBarKeyReleased(java.awt.event.KeyEvent evt) {
+    
+    private void searchBarKeyReleased(java.awt.event.KeyEvent evt) {
         String searchText = searchBar.getText().toLowerCase();
         ArrayList<Student> filteredList = new ArrayList<>();
 
@@ -420,9 +525,8 @@ public class Main extends javax.swing.JFrame {
             }
         }
         updateTableWithFilteredList(filteredList); 
-}
+    }
 
-     
     private void updateTableWithFilteredList(ArrayList<Student> filteredList) {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Student ID");
@@ -441,9 +545,9 @@ public class Main extends javax.swing.JFrame {
                 student.getYearLevel(),
                 student.getStatus()
             });
+        }
+        studentTable.setModel(model); 
     }
-    studentTable.setModel(model); 
-}
 
     private void studentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTableMouseClicked
         int selectedRow = studentTable.getSelectedRow();
@@ -471,18 +575,18 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_studentTableMouseClicked
-     private void addStudent(Student student) {
+    
+    private void addStudent(Student student) {
         studentArrayList.add(student);
         updateTable(); 
     }
-
 
     private void deleteStudent(String studentId) {
         studentArrayList.removeIf(student -> student.getStudentId().equals(studentId));
         updateTable(); // Refresh the table after deleting
     }
 
-     private void updateStudent(String studentId, String firstName, String middleName, String lastName, String yearLevel, String status) {
+    private void updateStudent(String studentId, String firstName, String middleName, String lastName, String yearLevel, String status) {
         for (Student student : studentArrayList) {
             if (student.getStudentId().equals(studentId)) {
                 student.setFirstName(firstName);
@@ -495,15 +599,17 @@ public class Main extends javax.swing.JFrame {
         }
         updateTable(); // Refresh the table after updating
     }
+    
     private void sortStudentsByLastName() {
         quickSort(studentArrayList, 0, studentArrayList.size() - 1);
         updateTable(); 
     }
+    
     private void quickSort(ArrayList<Student> list, int low, int high) {
-     if (low < high) {
-         int pi = partition(list, low, high);
-         quickSort(list, low, pi - 1);
-         quickSort(list, pi + 1, high);
+        if (low < high) {
+            int pi = partition(list, low, high);
+            quickSort(list, low, pi - 1);
+            quickSort(list, pi + 1, high);
         }
     }
 
@@ -525,24 +631,7 @@ public class Main extends javax.swing.JFrame {
         list.set(high, temp);
         return i + 1;
     }
-
-    private int binarySearch(String studentId) {
-        int low = 0;
-        int high = studentArrayList.size() - 1;
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            if (studentArrayList.get(mid).getStudentId().equals(studentId)) {
-                return mid; // Found
-            } else if (studentArrayList.get(mid).getStudentId().compareTo(studentId) < 0) {
-                low = mid + 1;
-            } else {
-                high = mid - 1;
-            }
-        }
-        return -1; // Not found
-    }
     
-        
     /**
      * @param args the command line arguments
      */

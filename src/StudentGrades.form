@@ -124,7 +124,7 @@
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
@@ -151,10 +151,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="finalsGrade" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jScrollPane3" min="-2" pref="406" max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" alignment="0" min="-2" pref="532" max="-2" attributes="0"/>
+                  <Component id="jScrollPane3" pref="406" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" alignment="0" pref="0" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -547,6 +547,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Calculate Midterm"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="midtermBtnActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel17">
               <Properties>
@@ -592,6 +595,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Calculate Final"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="finalBtnActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

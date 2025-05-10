@@ -1,7 +1,8 @@
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-
+import java.sql.Connection;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /*
@@ -162,6 +163,11 @@ public class StudentGrades extends javax.swing.JFrame {
         });
 
         midtermBtn.setText("Calculate Midterm");
+        midtermBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                midtermBtnActionPerformed(evt);
+            }
+        });
 
         jLabel17.setText("Finals:");
 
@@ -176,6 +182,11 @@ public class StudentGrades extends javax.swing.JFrame {
         jLabel23.setText("Midterm Grade(%):");
 
         finalBtn.setText("Calculate Final");
+        finalBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                finalBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout gradePanelLayout = new javax.swing.GroupLayout(gradePanel);
         gradePanel.setLayout(gradePanelLayout);
@@ -445,7 +456,7 @@ public class StudentGrades extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 3, Short.MAX_VALUE)))
                 .addGap(38, 38, 38)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -467,9 +478,9 @@ public class StudentGrades extends javax.swing.JFrame {
                         .addComponent(jLabel26)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(finalsGrade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 532, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
         );
 
         pack();
@@ -487,38 +498,8 @@ public class StudentGrades extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
-    private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_registerBtnActionPerformed
-
-       
-    
-    private void prelimBtnActionPerformed(java.awt.event.ActionEvent evt)
-    {
-        try
-        {
-            double quiz = Double.parseDouble(quizPrelim.getText());
-            double activities = Double.parseDouble(activitiesPrelim.getText());
-            double assignments = Double.parseDouble(assignmentPrelim.getText());
-            double exam = Double.parseDouble(examPrelim.getText());
-
-            // Calculate Prelim grade using the formula
-            double prelim = ((quiz + activities + assignments) / 2) + (exam / 2);
-
-            double prelimInt = (double) prelim;
-            prelimGrade.setText(String.valueOf(prelimInt));
-            prelimGrade.setEditable(false);
-        }
-        catch (NumberFormatException ex)
-        {
-        	prelimGrade.setText("Invalid input!");
-        }
-    }
-    
-    private void midtermBtnActionPerformed(java.awt.event.ActionEvent evt)
-    {
-        try
-        {
+    private void midtermBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_midtermBtnActionPerformed
+        try {
             double quiz = Double.parseDouble(quizMidterm.getText());
             double activities = Double.parseDouble(activitiesMidterm.getText());
             double assignments = Double.parseDouble(assignmentsMidterm.getText());
@@ -531,17 +512,17 @@ public class StudentGrades extends javax.swing.JFrame {
             double midtermInt = (double) midterm;
             midtermGrade.setText(String.valueOf(midtermInt));
             midtermGrade.setEditable(false);
+            
+            // Update the text area with midterm inputs
+            updateGradesTextArea();
         }
-        catch (NumberFormatException ex)
-        {
-        	midtermGrade.setText("Invalid input!");
+        catch (NumberFormatException ex) {
+            midtermGrade.setText("Invalid input!");
         }
-    }
-    
-    private void finalBtnActionPerformed(java.awt.event.ActionEvent evt)
-    {
-        try
-        {
+    }//GEN-LAST:event_midtermBtnActionPerformed
+
+    private void finalBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finalBtnActionPerformed
+        try {
             double quiz = Double.parseDouble(quizFinals.getText());
             double activities = Double.parseDouble(activitiesFinal.getText());
             double assignments = Double.parseDouble(assignmentsFinals.getText());
@@ -554,12 +535,263 @@ public class StudentGrades extends javax.swing.JFrame {
             double finalsInt = (double) finals;
             finalsGrade.setText(String.valueOf(finalsInt));
             finalsGrade.setEditable(false);
+            
+            // Update the text area with finals inputs
+            updateGradesTextArea();
         }
-        catch (NumberFormatException ex)
-        {
-        	finalsGrade.setText("Invalid input!");
+        catch (NumberFormatException ex) {
+            finalsGrade.setText("Invalid input!");
+        }
+    }//GEN-LAST:event_finalBtnActionPerformed
+
+    private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {
+        // Get student information from text fields
+        String studentID = studentIDtxt.getText();
+        String firstName = studentFirstNametxt.getText();
+        String middleName = studentMiddleNametxt.getText();
+        String lastName = studentLastNametxt.getText();
+        String yearLevel = yearLvl.getSelectedItem().toString();
+        String studentStatus = status.getSelectedItem().toString();
+        
+        // Get grades (if available)
+        String prelim = prelimGrade.getText().isEmpty() ? "0" : prelimGrade.getText();
+        String midterm = midtermGrade.getText().isEmpty() ? "0" : midtermGrade.getText();
+        String finals = finalsGrade.getText().isEmpty() ? "0" : finalsGrade.getText();
+        
+        // Validate the input fields
+        if (studentID.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Student ID, First Name, and Last Name are required fields!", 
+                                         "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        Connection conn = null;
+        java.sql.PreparedStatement pstmt = null;
+        
+        try {
+            // Get connection from SQLiteConnection class
+            conn = SQLiteConnection.getConnection();
+            
+            // SQL query to insert data into studentGrades table
+            String sql = "INSERT INTO studentGrades(student_id, student_first_name, student_middle_name, " +
+                         "student_last_name, year_level, status, prelimGrade, midtermGrade, finalGrade) " +
+                         "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, studentID);
+            pstmt.setString(2, firstName);
+            pstmt.setString(3, middleName);
+            pstmt.setString(4, lastName);
+            pstmt.setString(5, yearLevel);
+            pstmt.setString(6, studentStatus);
+            pstmt.setDouble(7, Double.parseDouble(prelim));
+            pstmt.setDouble(8, Double.parseDouble(midterm));
+            pstmt.setDouble(9, Double.parseDouble(finals));
+            
+            // Execute the query
+            int rowsAffected = pstmt.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Student record registered successfully!", 
+                                             "Success", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Update the table display
+                updateRecordsTable();
+                
+                // Clear the input fields
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to register student record!", 
+                                             "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), 
+                                         "SQL Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid grade format! Please ensure all grades are numbers.", 
+                                         "Input Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
+    
+ // Method to update the records table with current database data
+    private void updateRecordsTable() {
+        Connection conn = null;
+        java.sql.PreparedStatement pstmt = null;
+        java.sql.ResultSet rs = null;
+        
+        try {
+            conn = SQLiteConnection.getConnection();
+            String sql = "SELECT student_id, student_first_name, student_middle_name, " +
+                         "student_last_name, year_level, status FROM student";
+            
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            
+            // Create a DefaultTableModel to store the data
+            javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(
+                new Object [][] {},
+                new String [] {
+                    "student_id", "student_first_name", "student_middle_name", 
+                    "student_last_name", "year_level", "status"
+                }
+            );
+            
+            // Populate the model with data from the database
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("student_id"),
+                    rs.getString("student_first_name"),
+                    rs.getString("student_middle_name"),
+                    rs.getString("student_last_name"),
+                    rs.getString("year_level"),
+                    rs.getString("status")
+                });
+            }
+            
+            // Set the model to the records table
+            records.setModel(model);
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error loading records: " + ex.getMessage(), 
+                                         "Database Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    // Method to clear input fields after successful registration
+    private void clearFields() {
+        studentIDtxt.setText("");
+        studentFirstNametxt.setText("");
+        studentMiddleNametxt.setText("");
+        studentLastNametxt.setText("");
+        yearLvl.setSelectedIndex(0);
+        status.setSelectedIndex(0);
+        
+        // Clear grade fields
+        quizPrelim.setText("");
+        activitiesPrelim.setText("");
+        assignmentPrelim.setText("");
+        examPrelim.setText("");
+        prelimGrade.setText("");
+        
+        quizMidterm.setText("");
+        activitiesMidterm.setText("");
+        assignmentsMidterm.setText("");
+        examMidterm.setText("");
+        prelimTxt.setText("");
+        midtermGrade.setText("");
+        
+        quizFinals.setText("");
+        activitiesFinal.setText("");
+        assignmentsFinals.setText("");
+        examFinals.setText("");
+        midtermTxt.setText("");
+        finalsGrade.setText("");
+        
+        // Clear the text area
+        gradesArea.setText("");
+    }
+
+       
+    
+ // First, we need to add code to update the text area in each button action method
+
+    private void prelimBtnActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            double quiz = Double.parseDouble(quizPrelim.getText());
+            double activities = Double.parseDouble(activitiesPrelim.getText());
+            double assignments = Double.parseDouble(assignmentPrelim.getText());
+            double exam = Double.parseDouble(examPrelim.getText());
+
+            // Calculate Prelim grade using the formula
+            double prelim = ((quiz + activities + assignments) / 2) + (exam / 2);
+
+            double prelimInt = (double) prelim;
+            prelimGrade.setText(String.valueOf(prelimInt));
+            prelimGrade.setEditable(false);
+            
+            // Update the text area with prelim inputs
+            updateGradesTextArea();
+        }
+        catch (NumberFormatException ex) {
+            prelimGrade.setText("Invalid input!");
+        }
+    }
+
+    
+
+    
+
+    // Add a new method to update the text area with all grade inputs
+    private void updateGradesTextArea() {
+        StringBuilder sb = new StringBuilder();
+        
+        // Get student information
+        String studentID = studentIDtxt.getText();
+        String firstName = studentFirstNametxt.getText();
+        String lastName = studentLastNametxt.getText();
+        
+        // Add student info header
+        sb.append("Student Information:\n");
+        sb.append("---------------------------\n");
+        sb.append("ID: ").append(studentID).append("\n");
+        sb.append("Name: ").append(firstName).append(" ").append(lastName).append("\n");
+        sb.append("Year Level: ").append(yearLvl.getSelectedItem().toString()).append("\n");
+        sb.append("Status: ").append(status.getSelectedItem().toString()).append("\n\n");
+        
+        // Add Prelim grades
+        sb.append("PRELIM GRADES\n");
+        sb.append("---------------------------\n");
+        sb.append("Quiz: ").append(quizPrelim.getText()).append("\n");
+        sb.append("Activities: ").append(activitiesPrelim.getText()).append("\n");
+        sb.append("Assignments: ").append(assignmentPrelim.getText()).append("\n");
+        sb.append("Exam: ").append(examPrelim.getText()).append("\n");
+        sb.append("Prelim Grade: ").append(prelimGrade.getText()).append("\n\n");
+        
+        // Add Midterm grades if available
+        if (!quizMidterm.getText().isEmpty()) {
+            sb.append("MIDTERM GRADES\n");
+            sb.append("---------------------------\n");
+            sb.append("Quiz: ").append(quizMidterm.getText()).append("\n");
+            sb.append("Activities: ").append(activitiesMidterm.getText()).append("\n");
+            sb.append("Assignments: ").append(assignmentsMidterm.getText()).append("\n");
+            sb.append("Exam: ").append(examMidterm.getText()).append("\n");
+            sb.append("Previous Prelim: ").append(prelimTxt.getText()).append("\n");
+            sb.append("Midterm Grade: ").append(midtermGrade.getText()).append("\n\n");
+        }
+        
+        // Add Finals grades if available
+        if (!quizFinals.getText().isEmpty()) {
+            sb.append("FINALS GRADES\n");
+            sb.append("---------------------------\n");
+            sb.append("Quiz: ").append(quizFinals.getText()).append("\n");
+            sb.append("Activities: ").append(activitiesFinal.getText()).append("\n");
+            sb.append("Assignments: ").append(assignmentsFinals.getText()).append("\n");
+            sb.append("Exam: ").append(examFinals.getText()).append("\n");
+            sb.append("Previous Midterm: ").append(midtermTxt.getText()).append("\n");
+            sb.append("Finals Grade: ").append(finalsGrade.getText()).append("\n\n");
+        }
+        
+        // Set the text to the text area
+        gradesArea.setText(sb.toString());
+    }
+
+    
     
     
     
