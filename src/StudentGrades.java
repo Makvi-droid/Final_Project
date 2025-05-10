@@ -2,6 +2,8 @@
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+import javax.swing.JOptionPane;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -38,7 +40,7 @@ public class StudentGrades extends javax.swing.JFrame {
         yearLvl = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        yearLvl1 = new javax.swing.JComboBox<>();
+        status = new javax.swing.JComboBox<>();
         studentIDtxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         studentFirstNametxt = new javax.swing.JTextField();
@@ -84,7 +86,7 @@ public class StudentGrades extends javax.swing.JFrame {
         midtermTxt = new javax.swing.JTextField();
         finalBtn = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        gradesArea = new javax.swing.JTextArea();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
@@ -105,7 +107,7 @@ public class StudentGrades extends javax.swing.JFrame {
 
         jLabel1.setText("Student ID:");
 
-        yearLvl1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Regular", "Irregular", " " }));
+        status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Regular", "Irregular", " " }));
 
         jLabel2.setText("Student Middle Name:");
 
@@ -153,6 +155,11 @@ public class StudentGrades extends javax.swing.JFrame {
         jLabel16.setText("Prelim grade(%):");
 
         prelimBtn.setText("Calculate Prelim");
+        prelimBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                prelimBtnActionPerformed(evt);
+            }
+        });
 
         midtermBtn.setText("Calculate Midterm");
 
@@ -322,9 +329,9 @@ public class StudentGrades extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(gradePanel);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane3.setViewportView(jTextArea1);
+        gradesArea.setColumns(20);
+        gradesArea.setRows(5);
+        jScrollPane3.setViewportView(gradesArea);
 
         jLabel24.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel24.setText("Prelim Grade:");
@@ -336,6 +343,11 @@ public class StudentGrades extends javax.swing.JFrame {
         jLabel26.setText("Finals Grade:");
 
         registerBtn.setText("Register");
+        registerBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registerBtnActionPerformed(evt);
+            }
+        });
 
         studentRecordsBtn.setText("Student Records");
         studentRecordsBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -389,7 +401,7 @@ public class StudentGrades extends javax.swing.JFrame {
                             .addComponent(jLabel6))
                         .addGap(22, 22, 22)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(yearLvl1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(studentIDtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(studentFirstNametxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -427,13 +439,13 @@ public class StudentGrades extends javax.swing.JFrame {
                             .addComponent(yearLvl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(21, 21, 21)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(yearLvl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 3, Short.MAX_VALUE)))
                 .addGap(38, 38, 38)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -455,9 +467,9 @@ public class StudentGrades extends javax.swing.JFrame {
                         .addComponent(jLabel26)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(finalsGrade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(50, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 532, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -475,6 +487,82 @@ public class StudentGrades extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_registerBtnActionPerformed
+
+       
+    
+    private void prelimBtnActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try
+        {
+            double quiz = Double.parseDouble(quizPrelim.getText());
+            double activities = Double.parseDouble(activitiesPrelim.getText());
+            double assignments = Double.parseDouble(assignmentPrelim.getText());
+            double exam = Double.parseDouble(examPrelim.getText());
+
+            // Calculate Prelim grade using the formula
+            double prelim = ((quiz + activities + assignments) / 2) + (exam / 2);
+
+            double prelimInt = (double) prelim;
+            prelimGrade.setText(String.valueOf(prelimInt));
+            prelimGrade.setEditable(false);
+        }
+        catch (NumberFormatException ex)
+        {
+        	prelimGrade.setText("Invalid input!");
+        }
+    }
+    
+    private void midtermBtnActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try
+        {
+            double quiz = Double.parseDouble(quizMidterm.getText());
+            double activities = Double.parseDouble(activitiesMidterm.getText());
+            double assignments = Double.parseDouble(assignmentsMidterm.getText());
+            double exam = Double.parseDouble(examMidterm.getText());
+            double prelim = Double.parseDouble(prelimGrade.getText()); // will hold the computed prelimGrade
+
+            // Calculate Midterm grade using the formula
+            double midterm = ((((quiz + activities + assignments) / 2) + (exam / 2)) * 0.67) + (prelim * 0.33);
+
+            double midtermInt = (double) midterm;
+            midtermGrade.setText(String.valueOf(midtermInt));
+            midtermGrade.setEditable(false);
+        }
+        catch (NumberFormatException ex)
+        {
+        	midtermGrade.setText("Invalid input!");
+        }
+    }
+    
+    private void finalBtnActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try
+        {
+            double quiz = Double.parseDouble(quizFinals.getText());
+            double activities = Double.parseDouble(activitiesFinal.getText());
+            double assignments = Double.parseDouble(assignmentsFinals.getText());
+            double exam = Double.parseDouble(examFinals.getText());
+            double midterm = Double.parseDouble(midtermGrade.getText()); // will hold the computed midtermGrade
+
+            // Calculate Final grade using the formula
+            double finals = ((((quiz + activities + assignments) / 2) + (exam / 2)) * 0.67) + (midterm * 0.33);
+
+            double finalsInt = (double) finals;
+            finalsGrade.setText(String.valueOf(finalsInt));
+            finalsGrade.setEditable(false);
+        }
+        catch (NumberFormatException ex)
+        {
+        	finalsGrade.setText("Invalid input!");
+        }
+    }
+    
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -524,6 +612,7 @@ public class StudentGrades extends javax.swing.JFrame {
     private javax.swing.JButton finalBtn;
     private javax.swing.JTextField finalsGrade;
     private javax.swing.JPanel gradePanel;
+    private javax.swing.JTextArea gradesArea;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -553,7 +642,6 @@ public class StudentGrades extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton midtermBtn;
     private javax.swing.JTextField midtermGrade;
     private javax.swing.JTextField midtermTxt;
@@ -565,12 +653,12 @@ public class StudentGrades extends javax.swing.JFrame {
     private javax.swing.JTextField quizPrelim;
     private javax.swing.JTable records;
     private javax.swing.JButton registerBtn;
+    private javax.swing.JComboBox<String> status;
     private javax.swing.JTextField studentFirstNametxt;
     private javax.swing.JTextField studentIDtxt;
     private javax.swing.JTextField studentLastNametxt;
     private javax.swing.JTextField studentMiddleNametxt;
     private javax.swing.JButton studentRecordsBtn;
     private javax.swing.JComboBox<String> yearLvl;
-    private javax.swing.JComboBox<String> yearLvl1;
     // End of variables declaration//GEN-END:variables
 }

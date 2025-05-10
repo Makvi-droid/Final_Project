@@ -66,7 +66,8 @@ public class Main extends javax.swing.JFrame {
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
         
-         updateTable();
+        loadStudentsFromDatabase();
+        updateTable();  
     }
 
      private void addEventHandlers() {
@@ -85,7 +86,7 @@ public class Main extends javax.swing.JFrame {
         Connection conn = SQLiteConnection.getConnection();
         if (conn != null) {
             studentArrayList.clear();
-            String sql = "SELECT student_id, student_first_name, student_middle_name, student_last_name, year_level, status FROM students";
+            String sql = "SELECT student_id, student_first_name, student_middle_name, student_last_name, year_level, status FROM student";
             try (PreparedStatement pstmt = conn.prepareStatement(sql);
                  ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -107,7 +108,7 @@ public class Main extends javax.swing.JFrame {
     private void addStudentToDatabase(Student student) {
         Connection conn = SQLiteConnection.getConnection();
         if (conn != null) {
-            String sql = "INSERT INTO students (student_id, student_first_name, student_middle_name, student_last_name, year_level, status) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO student (student_id, student_first_name, student_middle_name, student_last_name, year_level, status) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, student.getStudentId());
                 pstmt.setString(2, student.getFirstName());
@@ -125,7 +126,7 @@ public class Main extends javax.swing.JFrame {
     private void deleteStudentFromDatabase(String studentId) {
         Connection conn = SQLiteConnection.getConnection();
         if (conn != null) {
-            String sql = "DELETE FROM students WHERE student_id = ?";
+            String sql = "DELETE FROM student WHERE student_id = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, studentId);
                 pstmt.executeUpdate();
@@ -138,7 +139,7 @@ public class Main extends javax.swing.JFrame {
     private void updateStudentInDatabase(Student student) {
         Connection conn = SQLiteConnection.getConnection();
         if (conn != null) {
-            String sql = "UPDATE students SET student_first_name = ?, student_middle_name = ?, student_last_name = ?, year_level = ?, status = ? WHERE student_id = ?";
+            String sql = "UPDATE student SET student_first_name = ?, student_middle_name = ?, student_last_name = ?, year_level = ?, status = ? WHERE student_id = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, student.getFirstName());
                 pstmt.setString(2, student.getMiddleName());
@@ -182,7 +183,7 @@ public class Main extends javax.swing.JFrame {
         updateBtn = new javax.swing.JButton();
         sortBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        studentTabletest = new javax.swing.JTable();
+        studentTable = new javax.swing.JTable();
         studentGradesBtn = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
 
@@ -215,7 +216,7 @@ public class Main extends javax.swing.JFrame {
 
         sortBtn.setText("Sort");
 
-        studentTabletest.setModel(new javax.swing.table.DefaultTableModel(
+        studentTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -226,12 +227,12 @@ public class Main extends javax.swing.JFrame {
                 "student_id", "student_first_name", "student_middle_name", "student_last_name", "year_level", "status"
             }
         ));
-        studentTabletest.addMouseListener(new java.awt.event.MouseAdapter() {
+        studentTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                studentTabletestMouseClicked(evt);
+                studentTableMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(studentTabletest);
+        jScrollPane1.setViewportView(studentTable);
 
         studentGradesBtn.setText("Student Grades");
         studentGradesBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -402,7 +403,7 @@ public class Main extends javax.swing.JFrame {
                 student.getStatus()
             });
         }
-        studentTabletest.setModel(model); 
+        studentTable.setModel(model); 
     }
     private void sortBtnActionPerformed(java.awt.event.ActionEvent evt) {
         sortStudentsByLastName(); 
@@ -441,19 +442,19 @@ public class Main extends javax.swing.JFrame {
                 student.getStatus()
             });
     }
-    studentTabletest.setModel(model); 
+    studentTable.setModel(model); 
 }
 
-    private void studentTabletestMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTabletestMouseClicked
-        int selectedRow = studentTabletest.getSelectedRow();
+    private void studentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTableMouseClicked
+        int selectedRow = studentTable.getSelectedRow();
     
         if (selectedRow != -1) {
-            studentIDtxt.setText(studentTabletest.getValueAt(selectedRow, 0).toString());
-            studentFirstNametxt.setText(studentTabletest.getValueAt(selectedRow, 1).toString());
-            studentMiddleNametxt.setText(studentTabletest.getValueAt(selectedRow, 2).toString());
-            studentLastNametxt.setText(studentTabletest.getValueAt(selectedRow, 3).toString());
+            studentIDtxt.setText(studentTable.getValueAt(selectedRow, 0).toString());
+            studentFirstNametxt.setText(studentTable.getValueAt(selectedRow, 1).toString());
+            studentMiddleNametxt.setText(studentTable.getValueAt(selectedRow, 2).toString());
+            studentLastNametxt.setText(studentTable.getValueAt(selectedRow, 3).toString());
 
-            String yearLevelValue = studentTabletest.getValueAt(selectedRow, 4).toString();
+            String yearLevelValue = studentTable.getValueAt(selectedRow, 4).toString();
             for (int i = 0; i < yearLvl.getItemCount(); i++) {
                 if (yearLvl.getItemAt(i).equals(yearLevelValue)) {
                     yearLvl.setSelectedIndex(i);
@@ -461,7 +462,7 @@ public class Main extends javax.swing.JFrame {
                 }
             }
 
-            String statusValue = studentTabletest.getValueAt(selectedRow, 5).toString();
+            String statusValue = studentTable.getValueAt(selectedRow, 5).toString();
             for (int i = 0; i < yearLvl1.getItemCount(); i++) {
                 if (yearLvl1.getItemAt(i).equals(statusValue)) {
                     yearLvl1.setSelectedIndex(i);
@@ -469,7 +470,7 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         }
-    }//GEN-LAST:event_studentTabletestMouseClicked
+    }//GEN-LAST:event_studentTableMouseClicked
      private void addStudent(Student student) {
         studentArrayList.add(student);
         updateTable(); 
@@ -576,7 +577,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField studentIDtxt;
     private javax.swing.JTextField studentLastNametxt;
     private javax.swing.JTextField studentMiddleNametxt;
-    private javax.swing.JTable studentTabletest;
+    private javax.swing.JTable studentTable;
     private javax.swing.JButton updateBtn;
     private javax.swing.JComboBox<String> yearLvl;
     private javax.swing.JComboBox<String> yearLvl1;

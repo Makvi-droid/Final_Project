@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * @author ADMIN
  */
 public class SQLiteConnection {
-     private static final String database = "jdbc:sqlite:.//database//student.sqlite";
+     private static final String database = "jdbc:sqlite:.//database//studentInfo.sqlite";
     private static Connection connection;
     
     public static Connection getConnection(){
