@@ -175,6 +175,12 @@ public class Main extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel7.setText("Search:");
 
+        searchBar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchBarKeyReleased(evt);
+            }
+        });
+
         addBtn.setText("Add");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -359,20 +365,7 @@ public class Main extends javax.swing.JFrame {
         studentTable.setModel(model); 
     }
     
-    private void searchBarKeyReleased(java.awt.event.KeyEvent evt) {
-        String searchText = searchBar.getText().toLowerCase();
-        ArrayList<Student> filteredList = new ArrayList<>();
-
-        for (Student student : studentArrayList) {
-            if (student.getFirstName().toLowerCase().contains(searchText) ||
-                student.getLastName().toLowerCase().contains(searchText) ||
-                student.getStudentId().toLowerCase().contains(searchText)) {
-                filteredList.add(student);
-            }
-        }
-        updateTableWithFilteredList(filteredList); 
-    }
-
+    
     private void updateTableWithFilteredList(ArrayList<Student> filteredList) {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Student ID");
@@ -394,6 +387,7 @@ public class Main extends javax.swing.JFrame {
             });
         }
         studentTable.setModel(model); 
+
     }
 
     private void studentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTableMouseClicked
@@ -590,6 +584,20 @@ public class Main extends javax.swing.JFrame {
     private void sortBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortBtnActionPerformed
         sortStudentsByLastName(); 
     }//GEN-LAST:event_sortBtnActionPerformed
+
+    private void searchBarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchBarKeyReleased
+        String searchText = searchBar.getText().toLowerCase();
+        ArrayList<Student> filteredList = new ArrayList<>();
+
+        for (Student student : studentArrayList) {
+            if (student.getFirstName().toLowerCase().contains(searchText) ||
+                student.getLastName().toLowerCase().contains(searchText) ||
+                student.getStudentId().toLowerCase().contains(searchText)) {
+                filteredList.add(student);
+            }
+        }
+        updateTableWithFilteredList(filteredList); 
+    }//GEN-LAST:event_searchBarKeyReleased
     
     private void addStudent(Student student) {
         studentArrayList.add(student);
