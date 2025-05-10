@@ -63,7 +63,9 @@ public class Main extends javax.swing.JFrame {
     
     public Main() {
         initComponents();
-        addEventHandlers();
+        
+        // Remove this line to fix the duplicate event handler issue
+        // addEventHandlers();
         
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
@@ -72,16 +74,27 @@ public class Main extends javax.swing.JFrame {
         // Get database connection
         connection = SQLiteConnection.getConnection();
         
-       
-        
         // Load students from database
         loadStudentsFromDatabase();
         
         updateTable();  
     }
 
+    // Remove this method to fix the duplicate event handler issue
+    /*
+    private void addEventHandlers() {
+        addBtn.addActionListener(evt -> addBtnActionPerformed(evt));
+        deleteBtn.addActionListener(evt -> deleteBtnActionPerformed(evt));
+        updateBtn.addActionListener(evt -> updateBtnActionPerformed(evt));
+        sortBtn.addActionListener(evt -> sortBtnActionPerformed(evt));
+        searchBar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchBarKeyReleased(evt);
+            }
+        });
+    }
+    */
     
-
     private void loadStudentsFromDatabase() {
         studentArrayList.clear();
         try {
@@ -109,18 +122,6 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
-    private void addEventHandlers() {
-        addBtn.addActionListener(evt -> addBtnActionPerformed(evt));
-        deleteBtn.addActionListener(evt -> deleteBtnActionPerformed(evt));
-        updateBtn.addActionListener(evt -> updateBtnActionPerformed(evt));
-        sortBtn.addActionListener(evt -> sortBtnActionPerformed(evt));
-        searchBar.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                searchBarKeyReleased(evt);
-            }
-        });
-    }
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -336,10 +337,6 @@ public class Main extends javax.swing.JFrame {
         yearLvl1.setSelectedIndex(0);
     }
 
-   
-
-    
-    
     private void updateTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Student ID");
@@ -362,8 +359,6 @@ public class Main extends javax.swing.JFrame {
         studentTable.setModel(model); 
     }
     
-    
-    
     private void searchBarKeyReleased(java.awt.event.KeyEvent evt) {
         String searchText = searchBar.getText().toLowerCase();
         ArrayList<Student> filteredList = new ArrayList<>();
@@ -379,25 +374,26 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void updateTableWithFilteredList(ArrayList<Student> filteredList) {
-    	  DefaultTableModel model = new DefaultTableModel();
-          model.addColumn("Student ID");
-          model.addColumn("First Name");
-          model.addColumn("Middle Name");
-          model.addColumn("Last Name");
-          model.addColumn("Year Level");
-          model.addColumn("Status");
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Student ID");
+        model.addColumn("First Name");
+        model.addColumn("Middle Name");
+        model.addColumn("Last Name");
+        model.addColumn("Year Level");
+        model.addColumn("Status");
 
-          for (Student student : studentArrayList) {
-              model.addRow(new Object[]{
-                  student.getStudentId(),
-                  student.getFirstName(),
-                  student.getMiddleName(),
-                  student.getLastName(),
-                  student.getYearLevel(),
-                  student.getStatus()
-              });
-          }
-          studentTable.setModel(model); 
+        // Bug fix: This method should use the filteredList instead of the full studentArrayList
+        for (Student student : filteredList) {
+            model.addRow(new Object[]{
+                student.getStudentId(),
+                student.getFirstName(),
+                student.getMiddleName(),
+                student.getLastName(),
+                student.getYearLevel(),
+                student.getStatus()
+            });
+        }
+        studentTable.setModel(model); 
     }
 
     private void studentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTableMouseClicked
