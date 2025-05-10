@@ -175,6 +175,11 @@ public class Main extends javax.swing.JFrame {
         jLabel7.setText("Search:");
 
         addBtn.setText("Add");
+        addBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setText("Delete");
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -191,6 +196,11 @@ public class Main extends javax.swing.JFrame {
         });
 
         sortBtn.setText("Sort");
+        sortBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortBtnActionPerformed(evt);
+            }
+        });
 
         studentTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -316,60 +326,6 @@ public class Main extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_studentGradesBtnActionPerformed
 
-    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {
-        String studentId = studentIDtxt.getText();
-        String firstName = studentFirstNametxt.getText();
-        String middleName = studentMiddleNametxt.getText();
-        String lastName = studentLastNametxt.getText();
-        String yearLevel = yearLvl.getSelectedItem().toString();
-        String status = yearLvl1.getSelectedItem().toString();
-
-        // Data validation
-        if (studentId.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Student ID, First Name, and Last Name are required fields.",
-                    "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Check if student ID already exists
-        for (Student s : studentArrayList) {
-            if (s.getStudentId().equals(studentId)) {
-                JOptionPane.showMessageDialog(this, "Student ID already exists.",
-                        "Input Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-
-        try {
-            String sql = "INSERT INTO student (student_id, student_first_name, student_middle_name, student_last_name, year_level, status) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, studentId);
-            preparedStatement.setString(2, firstName);
-            preparedStatement.setString(3, middleName);
-            preparedStatement.setString(4, lastName);
-            preparedStatement.setString(5, yearLevel);
-            preparedStatement.setString(6, status);
-            
-            int rowsAffected = preparedStatement.executeUpdate();
-            preparedStatement.close();
-            
-            if (rowsAffected > 0) {
-                Student student = new Student(studentId, firstName, middleName, lastName, yearLevel, status);
-                studentArrayList.add(student);
-                updateTable();
-                
-                // Clear input fields
-                clearInputFields();
-                
-                JOptionPane.showMessageDialog(this, "Student added successfully!",
-                        "Success", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error adding student: " + e.getMessage(),
-                    "Database Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-    }
 
     private void clearInputFields() {
         studentIDtxt.setText("");
@@ -406,9 +362,7 @@ public class Main extends javax.swing.JFrame {
         studentTable.setModel(model); 
     }
     
-    private void sortBtnActionPerformed(java.awt.event.ActionEvent evt) {
-        sortStudentsByLastName(); 
-    }
+    
     
     private void searchBarKeyReleased(java.awt.event.KeyEvent evt) {
         String searchText = searchBar.getText().toLowerCase();
@@ -581,6 +535,65 @@ public class Main extends javax.swing.JFrame {
              }
          }
     }//GEN-LAST:event_updateBtnActionPerformed
+
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        String studentId = studentIDtxt.getText();
+        String firstName = studentFirstNametxt.getText();
+        String middleName = studentMiddleNametxt.getText();
+        String lastName = studentLastNametxt.getText();
+        String yearLevel = yearLvl.getSelectedItem().toString();
+        String status = yearLvl1.getSelectedItem().toString();
+
+        // Data validation
+        if (studentId.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Student ID, First Name, and Last Name are required fields.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Check if student ID already exists
+        for (Student s : studentArrayList) {
+            if (s.getStudentId().equals(studentId)) {
+                JOptionPane.showMessageDialog(this, "Student ID already exists.",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        try {
+            String sql = "INSERT INTO student (student_id, student_first_name, student_middle_name, student_last_name, year_level, status) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, studentId);
+            preparedStatement.setString(2, firstName);
+            preparedStatement.setString(3, middleName);
+            preparedStatement.setString(4, lastName);
+            preparedStatement.setString(5, yearLevel);
+            preparedStatement.setString(6, status);
+            
+            int rowsAffected = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            
+            if (rowsAffected > 0) {
+                Student student = new Student(studentId, firstName, middleName, lastName, yearLevel, status);
+                studentArrayList.add(student);
+                updateTable();
+                
+                // Clear input fields
+                clearInputFields();
+                
+                JOptionPane.showMessageDialog(this, "Student added successfully!",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error adding student: " + e.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_addBtnActionPerformed
+
+    private void sortBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortBtnActionPerformed
+        sortStudentsByLastName(); 
+    }//GEN-LAST:event_sortBtnActionPerformed
     
     private void addStudent(Student student) {
         studentArrayList.add(student);

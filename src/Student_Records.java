@@ -153,20 +153,33 @@ public class Student_Records extends javax.swing.JFrame {
         return DriverManager.getConnection(DB_URL);
     }
     
-    // Method to load student data from database
- // Method to load student data from database
+    
     private void loadStudentData() {
         try (Connection conn = getConnection()) {
+            // 1. Print the connection to verify it's working
+            System.out.println("Database connection established: " + conn);
+            
             String query = "SELECT * FROM studentGrades";
             try (PreparedStatement statement = conn.prepareStatement(query)) {
+                // 2. Execute query and get result set
                 ResultSet resultSet = statement.executeQuery();
                 
+                // 3. Get the table model
                 DefaultTableModel model = (DefaultTableModel) studentGradesTable.getModel();
-                model.setRowCount(0); // Clear existing data
                 
-                studentArrayList.clear(); // Clear existing data in ArrayList
+                // 4. Clear existing data
+                model.setRowCount(0);
                 
+                // 5. Clear existing data in ArrayList
+                studentArrayList.clear();
+                
+                // 6. Debug counter to see how many records are found
+                int recordCount = 0;
+                
+                // 7. Process all results
                 while (resultSet.next()) {
+                    recordCount++;
+                    
                     String id = resultSet.getString("student_id");
                     String firstName = resultSet.getString("student_first_name");
                     String middleName = resultSet.getString("student_middle_name");
@@ -177,10 +190,13 @@ public class Student_Records extends javax.swing.JFrame {
                     String midtermGrade = resultSet.getString("midtermGrade");
                     String finalGrade = resultSet.getString("finalGrade");
                     
-                    model.addRow(new Object[]{id, firstName, middleName, lastName, yearLevel, 
-                        status, prelimGrade, midtermGrade, finalGrade});
+                    // 8. Add to table model
+                    model.addRow(new Object[]{
+                        id, firstName, middleName, lastName, yearLevel, 
+                        status, prelimGrade, midtermGrade, finalGrade
+                    });
                     
-                    // Also add to ArrayList for possible array-based operations
+                    // 9. Also add to ArrayList for possible array-based operations
                     Student student = new Student();
                     student.setStudentId(id);
                     student.setFirstName(firstName);
@@ -192,9 +208,25 @@ public class Student_Records extends javax.swing.JFrame {
                     student.setMidtermGrade(midtermGrade);
                     student.setFinalGrade(finalGrade);
                     studentArrayList.add(student);
+                    
+                    // 10. Print record for debugging
+                    System.out.println("Loaded student: " + id + " - " + firstName + " " + lastName);
                 }
+                
+                // 11. Print the count of records found
+                System.out.println("Total records loaded: " + recordCount);
+                
+                // 12. Make sure the table refreshes
+                studentGradesTable.repaint();
+                
+            } catch (SQLException e) {
+                System.err.println("SQL Error in prepared statement: " + e.getMessage());
+                JOptionPane.showMessageDialog(this, "Error executing query: " + e.getMessage(),
+                        "Database Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         } catch (SQLException e) {
+            System.err.println("SQL Error in connection: " + e.getMessage());
             JOptionPane.showMessageDialog(this, "Error loading student data: " + e.getMessage(),
                     "Database Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
