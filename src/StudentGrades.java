@@ -25,7 +25,7 @@ public class StudentGrades extends javax.swing.JFrame {
      */
     public StudentGrades() {
         initComponents();
-         
+        loadStudentRecords();
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width/2 - getWidth()/2, size.height/2 - getHeight()/2);
@@ -554,44 +554,30 @@ public class StudentGrades extends javax.swing.JFrame {
     }//GEN-LAST:event_finalBtnActionPerformed
 
     private void recordsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_recordsMouseClicked
-        try(Connection connection = DriverManager.getConnection("jdbc:sqlite:.//database//studentInfo.db")){
+    	int selectedRow = records.getSelectedRow();
+        
+        // Check if a row is actually selected
+        if (selectedRow >= 0) {
+            // Get values from the selected row
+            String studentId = records.getValueAt(selectedRow, 0).toString();
+            String firstName = records.getValueAt(selectedRow, 1).toString();
+            String middleName = records.getValueAt(selectedRow, 2).toString();
+            String lastName = records.getValueAt(selectedRow, 3).toString();
+            String yearLevel = records.getValueAt(selectedRow, 4).toString();
+            String studentStatus = records.getValueAt(selectedRow, 5).toString();
             
-            String query = "SELECT * FROM student";
-            try(PreparedStatement statement = connection.prepareStatement(query)){
-                ResultSet resultSet = statement.executeQuery();
-                
-                DefaultTableModel model = new DefaultTableModel();
-                
-                model.addColumn("student_id");
-                model.addColumn("student_first_name");
-                model.addColumn("student_middle_name");
-                model.addColumn("student_last_name");
-                model.addColumn("year_level");
-                model.addColumn("status");
-               
-                
-                while(resultSet.next()){
-                    
-                    String id = resultSet.getString("student_id");
-                    String empName = resultSet.getString("student_first_name");
-                    String department = resultSet.getString("student_middle_name");
-                    String salary = resultSet.getString("student_last_name");
-                    String schedule = resultSet.getString("year_level");
-                    String status = resultSet.getString("status");
-                   
-                    
-                    model.addRow(new Object[]{id, empName, department, salary, schedule, status});
-                    
-                }
-                
-                records.setModel(model);
-                
-            }
-            connection.close();
+            // Set values to text fields
+            studentIDtxt.setText(studentId);
+            studentFirstNametxt.setText(firstName);
+            studentMiddleNametxt.setText(middleName);
+            studentLastNametxt.setText(lastName);
             
-        }
-        catch(SQLException e){
-            e.printStackTrace();
+            // Set ComboBox values
+            yearLvl.setSelectedItem(yearLevel);
+            status.setSelectedItem(studentStatus);
+            
+           
+            
         }
     }//GEN-LAST:event_recordsMouseClicked
 
@@ -789,6 +775,61 @@ public class StudentGrades extends javax.swing.JFrame {
         
         // Set the text to the text area
         gradesArea.setText(sb.toString());
+    }
+    
+    private void loadStudentRecords() {
+        Connection conn = null;
+        java.sql.PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
+        try {
+            // Get connection from SQLiteConnection class
+            conn = SQLiteConnection.getConnection();
+            
+            // SQL query to get all students
+            String sql = "SELECT * FROM student";
+            
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            
+            // Create a model for the table
+            DefaultTableModel model = new DefaultTableModel();
+            
+            // Add columns to the model
+            model.addColumn("student_id");
+            model.addColumn("student_first_name");
+            model.addColumn("student_middle_name");
+            model.addColumn("student_last_name");
+            model.addColumn("year_level");
+            model.addColumn("status");
+            
+            // Add rows to the model
+            while (rs.next()) {
+                String id = rs.getString("student_id");
+                String firstName = rs.getString("student_first_name");
+                String middleName = rs.getString("student_middle_name");
+                String lastName = rs.getString("student_last_name");
+                String yearLevel = rs.getString("year_level");
+                String studentStatus = rs.getString("status");
+                
+                model.addRow(new Object[]{id, firstName, middleName, lastName, yearLevel, studentStatus});
+            }
+            
+            // Set the model to the table
+            records.setModel(model);
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error loading student records: " + ex.getMessage(), 
+                                        "Database Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     
