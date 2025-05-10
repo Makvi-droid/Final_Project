@@ -1,10 +1,10 @@
-
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -21,17 +21,184 @@ import javax.swing.table.DefaultTableModel;
 public class Student_Records extends javax.swing.JFrame {
     
     private ArrayList<Student> studentArrayList = new ArrayList<>();
-     private int activeDataStructure = 1; 
+    private int activeDataStructure = 1; 
     private Connection connection;
+    private static final String DB_URL = "jdbc:sqlite:.//database//studentInfo.db";
 
     /**
      * Creates new form Student_Records
      */
+    
+    /**
+     * Student class to store student information
+     */
+    public class Student {
+        private String studentId;
+        private String firstName;
+        private String middleName;
+        private String lastName;
+        private String yearLevel;
+        private String status;
+        private String prelimGrade;
+        private String midtermGrade;
+        private String finalGrade;
+        
+        // Default constructor
+        public Student() {
+        }
+        
+        // Constructor with parameters
+        public Student(String studentId, String firstName, String middleName, String lastName, 
+                      String yearLevel, String status) {
+            this.studentId = studentId;
+            this.firstName = firstName;
+            this.middleName = middleName;
+            this.lastName = lastName;
+            this.yearLevel = yearLevel;
+            this.status = status;
+        }
+        
+        // Getters and Setters
+        public String getStudentId() {
+            return studentId;
+        }
+        
+        public void setStudentId(String studentId) {
+            this.studentId = studentId;
+        }
+        
+        public String getFirstName() {
+            return firstName;
+        }
+        
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+        
+        public String getMiddleName() {
+            return middleName;
+        }
+        
+        public void setMiddleName(String middleName) {
+            this.middleName = middleName;
+        }
+        
+        public String getLastName() {
+            return lastName;
+        }
+        
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+        
+        public String getYearLevel() {
+            return yearLevel;
+        }
+        
+        public void setYearLevel(String yearLevel) {
+            this.yearLevel = yearLevel;
+        }
+        
+        public String getStatus() {
+            return status;
+        }
+        
+        public void setStatus(String status) {
+            this.status = status;
+        }
+        
+        public String getPrelimGrade() {
+            return prelimGrade;
+        }
+        
+        public void setPrelimGrade(String prelimGrade) {
+            this.prelimGrade = prelimGrade;
+        }
+        
+        public String getMidtermGrade() {
+            return midtermGrade;
+        }
+        
+        public void setMidtermGrade(String midtermGrade) {
+            this.midtermGrade = midtermGrade;
+        }
+        
+        public String getFinalGrade() {
+            return finalGrade;
+        }
+        
+        public void setFinalGrade(String finalGrade) {
+            this.finalGrade = finalGrade;
+        }
+        
+        @Override
+        public String toString() {
+            return "Student{" + "studentId=" + studentId + ", firstName=" + firstName + 
+                   ", middleName=" + middleName + ", lastName=" + lastName + 
+                   ", yearLevel=" + yearLevel + ", status=" + status + '}';
+        }
+    }
     public Student_Records() {
         initComponents();
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width/2 - getWidth()/2, size.height/2 - getHeight()/2);
+        
+        // Load data when form opens
+        loadStudentData();
+    }
+    
+    // Method to establish database connection
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL);
+    }
+    
+    // Method to load student data from database
+ // Method to load student data from database
+    private void loadStudentData() {
+        try (Connection conn = getConnection()) {
+            String query = "SELECT * FROM studentGrades";
+            try (PreparedStatement statement = conn.prepareStatement(query)) {
+                ResultSet resultSet = statement.executeQuery();
+                
+                DefaultTableModel model = (DefaultTableModel) studentGradesTable.getModel();
+                model.setRowCount(0); // Clear existing data
+                
+                studentArrayList.clear(); // Clear existing data in ArrayList
+                
+                while (resultSet.next()) {
+                    String id = resultSet.getString("student_id");
+                    String firstName = resultSet.getString("student_first_name");
+                    String middleName = resultSet.getString("student_middle_name");
+                    String lastName = resultSet.getString("student_last_name");
+                    String yearLevel = resultSet.getString("year_level");
+                    String status = resultSet.getString("status");
+                    String prelimGrade = resultSet.getString("prelimGrade");
+                    String midtermGrade = resultSet.getString("midtermGrade");
+                    String finalGrade = resultSet.getString("finalGrade");
+                    
+                    model.addRow(new Object[]{id, firstName, middleName, lastName, yearLevel, 
+                        status, prelimGrade, midtermGrade, finalGrade});
+                    
+                    // Also add to ArrayList for possible array-based operations
+                    Student student = new Student();
+                    student.setStudentId(id);
+                    student.setFirstName(firstName);
+                    student.setMiddleName(middleName);
+                    student.setLastName(lastName);
+                    student.setYearLevel(yearLevel);
+                    student.setStatus(status);
+                    student.setPrelimGrade(prelimGrade);
+                    student.setMidtermGrade(midtermGrade);
+                    student.setFinalGrade(finalGrade);
+                    studentArrayList.add(student);
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error loading student data: " + e.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -242,7 +409,101 @@ public class Student_Records extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
-        // TODO add your handling code here:
+        String studentId = studentIDtxt.getText();
+        String firstName = studentFirstNametxt.getText();
+        String middleName = studentMiddleNametxt.getText();
+        String lastName = studentLastNametxt.getText();
+        String yearLevelText = (String) yearLvl.getSelectedItem();
+        String statusText = (String) yearLvl1.getSelectedItem();
+        String prelimText = prelimGrade.getText();
+        String midtermText = midtermGrade.getText();
+        String finalsText = finalsGrade.getText();
+        
+        // Validate input fields
+        if (studentId.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || 
+            yearLevelText.isEmpty() || statusText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all required fields",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            // Check if grades are valid numbers if they're not empty
+            if (!prelimText.isEmpty()) {
+                try {
+                    double grade = Double.parseDouble(prelimText);
+                    if (grade < 0 || grade > 100) {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Prelim grade must be a number between 0-100",
+                            "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            
+            if (!midtermText.isEmpty()) {
+                try {
+                    double grade = Double.parseDouble(midtermText);
+                    if (grade < 0 || grade > 100) {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Midterm grade must be a number between 0-100",
+                            "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            
+            if (!finalsText.isEmpty()) {
+                try {
+                    double grade = Double.parseDouble(finalsText);
+                    if (grade < 0 || grade > 100) {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Finals grade must be a number between 0-100",
+                            "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            
+            try (Connection conn = getConnection()) {
+                String sql = "UPDATE studentGrades SET student_first_name=?, student_middle_name=?, "
+                        + "student_last_name=?, year_level=?, status=?, prelimGrade=?, midtermGrade=?, "
+                        + "finalGrade=? WHERE student_id=?";
+                
+                try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                    preparedStatement.setString(1, firstName);
+                    preparedStatement.setString(2, middleName);
+                    preparedStatement.setString(3, lastName);
+                    preparedStatement.setString(4, yearLevelText);
+                    preparedStatement.setString(5, statusText);
+                    preparedStatement.setString(6, prelimText);
+                    preparedStatement.setString(7, midtermText);
+                    preparedStatement.setString(8, finalsText);
+                    preparedStatement.setString(9, studentId);
+                    
+                    int rowsAffected = preparedStatement.executeUpdate();
+                    
+                    if (rowsAffected > 0) {
+                        JOptionPane.showMessageDialog(this, "Student updated successfully!",
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                        // Refresh the table with updated data
+                        loadStudentData();
+                        // Clear input fields
+                        clearInputFields();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "No student found with ID: " + studentId,
+                                "Update Failed", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error updating student: " + e.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_updateBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
@@ -260,27 +521,31 @@ public class Student_Records extends javax.swing.JFrame {
                 JOptionPane.YES_NO_OPTION);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            try {
-                String sql = "DELETE FROM student WHERE student_id = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, studentId);
+            try (Connection conn = getConnection()) {
+                String sql = "DELETE FROM studentGrades WHERE student_id = ?";
+                try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                    preparedStatement.setString(1, studentId);
                 
-                int rowsAffected = preparedStatement.executeUpdate();
-                preparedStatement.close();
+                    int rowsAffected = preparedStatement.executeUpdate();
                 
-                if (rowsAffected > 0) {
-                    deleteStudent(studentId);
+                    if (rowsAffected > 0) {
+                        // Also remove from ArrayList if still using it
+                        deleteStudent(studentId);
                     
-                    // Clear input fields
-                    clearInputFields();
+                        // Clear input fields
+                        clearInputFields();
                     
-                    JOptionPane.showMessageDialog(this, "Student deleted successfully!",
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Student not found in database.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Student deleted successfully!",
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                        
+                        // Refresh table
+                        loadStudentData();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Student not found in database.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-            } catch (java.sql.SQLException e) {
+            } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this, "Error deleting student: " + e.getMessage(),
                         "Database Error", JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
@@ -290,7 +555,6 @@ public class Student_Records extends javax.swing.JFrame {
 
     private void deleteStudent(String studentId) {
         studentArrayList.removeIf(student -> student.getStudentId().equals(studentId));
-        updateTable(); // Refresh the table after deleting
     }
     
     private void quickSort(ArrayList<Student> list, int low, int high) {
@@ -327,75 +591,60 @@ public class Student_Records extends javax.swing.JFrame {
         studentLastNametxt.setText("");
         yearLvl.setSelectedIndex(0);
         yearLvl1.setSelectedIndex(0);
-    }
-    
-    private void updateTable() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Student ID");
-        model.addColumn("First Name");
-        model.addColumn("Middle Name");
-        model.addColumn("Last Name");
-        model.addColumn("Year Level");
-        model.addColumn("Status");
-
-        for (Student student : studentArrayList) {
-            model.addRow(new Object[]{
-                student.getStudentId(),
-                student.getFirstName(),
-                student.getMiddleName(),
-                student.getLastName(),
-                student.getYearLevel(),
-                student.getStatus()
-            });
-        }
-        studentGradesTable.setModel(model); 
+        prelimGrade.setText("");
+        midtermGrade.setText("");
+        finalsGrade.setText("");
     }
     
     private void studentGradesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentGradesTableMouseClicked
-         try(Connection connection = DriverManager.getConnection("jdbc:sqlite:.//database//studentInfo.db")){
+        // Get the selected row index
+        int selectedRow = studentGradesTable.getSelectedRow();
+        
+        if (selectedRow >= 0) {
+            // Get data from the selected row
+            String id = studentGradesTable.getValueAt(selectedRow, 0).toString();
+            String firstName = studentGradesTable.getValueAt(selectedRow, 1).toString();
+            Object middleNameObj = studentGradesTable.getValueAt(selectedRow, 2);
+            String middleName = (middleNameObj != null) ? middleNameObj.toString() : "";
+            String lastName = studentGradesTable.getValueAt(selectedRow, 3).toString();
+            String yearLevelValue = studentGradesTable.getValueAt(selectedRow, 4).toString();
+            String statusValue = studentGradesTable.getValueAt(selectedRow, 5).toString();
             
-            String query = "SELECT * FROM studentGrades";
-            try(PreparedStatement statement = connection.prepareStatement(query)){
-                ResultSet resultSet = statement.executeQuery();
-                
-                DefaultTableModel model = new DefaultTableModel();
-                
-                model.addColumn("student_id");
-                model.addColumn("student_first_name");
-                model.addColumn("student_middle_name");
-                model.addColumn("student_last_name");
-                model.addColumn("year_level");
-                model.addColumn("status");
-                model.addColumn("prelimGrade");
-                model.addColumn("midtermGrade");
-                model.addColumn("finalGrade");
-               
-                
-                while(resultSet.next()){
-                    
-                    String id = resultSet.getString("student_id");
-                    String empName = resultSet.getString("student_first_name");
-                    String department = resultSet.getString("student_middle_name");
-                    String salary = resultSet.getString("student_last_name");
-                    String schedule = resultSet.getString("year_level");
-                    String status = resultSet.getString("status");
-                    String prelimGrade = resultSet.getString("prelimGrade");
-                    String midtermGrade = resultSet.getString("midtermGrade");
-                    String finalGrade = resultSet.getString("finalGrade");
-                   
-                    
-                    model.addRow(new Object[]{id, empName, department, salary, schedule, status, prelimGrade, midtermGrade, finalGrade});
-                    
+            // Get grade values (handle null values)
+            Object prelimObj = studentGradesTable.getValueAt(selectedRow, 6);
+            String prelimValue = (prelimObj != null) ? prelimObj.toString() : "";
+            
+            Object midtermObj = studentGradesTable.getValueAt(selectedRow, 7);
+            String midtermValue = (midtermObj != null) ? midtermObj.toString() : "";
+            
+            Object finalsObj = studentGradesTable.getValueAt(selectedRow, 8);
+            String finalsValue = (finalsObj != null) ? finalsObj.toString() : "";
+            
+            // Set values to text fields
+            studentIDtxt.setText(id);
+            studentFirstNametxt.setText(firstName);
+            studentMiddleNametxt.setText(middleName);
+            studentLastNametxt.setText(lastName);
+            
+            // Set combo box selections
+            for (int i = 0; i < yearLvl.getItemCount(); i++) {
+                if (yearLvl.getItemAt(i).toString().equals(yearLevelValue)) {
+                    yearLvl.setSelectedIndex(i);
+                    break;
                 }
-                
-                studentGradesTable.setModel(model);
-                
             }
-            connection.close();
             
-        }
-        catch(java.sql.SQLException e){
-            e.printStackTrace();
+            for (int i = 0; i < yearLvl1.getItemCount(); i++) {
+                if (yearLvl1.getItemAt(i).toString().equals(statusValue)) {
+                    yearLvl1.setSelectedIndex(i);
+                    break;
+                }
+            }
+            
+            // Set grade values
+            prelimGrade.setText(prelimValue);
+            midtermGrade.setText(midtermValue);
+            finalsGrade.setText(finalsValue);
         }
     }//GEN-LAST:event_studentGradesTableMouseClicked
 
