@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.SwingUtilities;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -29,6 +30,7 @@ public class StudentGrades extends javax.swing.JFrame {
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width/2 - getWidth()/2, size.height/2 - getHeight()/2);
+        
     }
 
     /**
@@ -553,48 +555,83 @@ public class StudentGrades extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_finalBtnActionPerformed
 
+    
     private void recordsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_recordsMouseClicked
-        try(Connection connection = DriverManager.getConnection("jdbc:sqlite:.//database//studentInfo.db")){
-            
-            String query = "SELECT * FROM student";
-            try(PreparedStatement statement = connection.prepareStatement(query)){
-                ResultSet resultSet = statement.executeQuery();
-                
-                DefaultTableModel model = new DefaultTableModel();
-                
-                model.addColumn("student_id");
-                model.addColumn("student_first_name");
-                model.addColumn("student_middle_name");
-                model.addColumn("student_last_name");
-                model.addColumn("year_level");
-                model.addColumn("status");
-               
-                
-                while(resultSet.next()){
-                    
-                    String id = resultSet.getString("student_id");
-                    String empName = resultSet.getString("student_first_name");
-                    String department = resultSet.getString("student_middle_name");
-                    String salary = resultSet.getString("student_last_name");
-                    String schedule = resultSet.getString("year_level");
-                    String status = resultSet.getString("status");
-                   
-                    
-                    model.addRow(new Object[]{id, empName, department, salary, schedule, status});
-                    
-                }
-                
-                records.setModel(model);
-                
-            }
-            connection.close();
-            
-        }
-        catch(SQLException e){
-            e.printStackTrace();
+        
+         if (records.getSelectedRow() != -1) {
+         fillFieldsFromSelectedRow();
         }
     }//GEN-LAST:event_recordsMouseClicked
+        //load
+         private void loadStudentRecords() {
+         Connection connection = null;
+         PreparedStatement statement = null;
+         ResultSet resultSet = null;
 
+         try {
+             connection = DriverManager.getConnection("jdbc:sqlite:.//database//studentInfo.db");
+             String query = "SELECT * FROM student";
+             statement = connection.prepareStatement(query);
+             resultSet = statement.executeQuery();
+
+             DefaultTableModel model = new DefaultTableModel();
+             model.addColumn("student_id");
+             model.addColumn("student_first_name");
+             model.addColumn("student_middle_name");
+             model.addColumn("student_last_name");
+             model.addColumn("year_level");
+             model.addColumn("status");
+
+             while (resultSet.next()) {
+                 model.addRow(new Object[]{
+                     resultSet.getString("student_id"),
+                     resultSet.getString("student_first_name"),
+                     resultSet.getString("student_middle_name"),
+                     resultSet.getString("student_last_name"),
+                     resultSet.getString("year_level"),
+                     resultSet.getString("status")
+                 });
+             }
+
+             records.setModel(model);
+
+             // Auto-select and fill fields for first row (if any)
+             SwingUtilities.invokeLater(() -> {
+                 if (records.getRowCount() > 0) {
+                     records.setRowSelectionInterval(0, 0);
+                     fillFieldsFromSelectedRow();
+                 }
+             });
+
+         } catch (SQLException e) {
+             e.printStackTrace();
+         } finally {
+             try {
+                 if (resultSet != null) resultSet.close();
+                 if (statement != null) statement.close();
+                 if (connection != null) connection.close();
+             } catch (SQLException ex) {
+                 ex.printStackTrace();
+             }
+         }
+     }
+
+    }
+
+    
+    private void fillFieldsFromSelectedRow() {
+     int row = records.getSelectedRow();
+    if (row != -1) {
+        studentIdField.setText(records.getValueAt(row, 0).toString());
+        firstNameField.setText(records.getValueAt(row, 1).toString());
+        middleNameField.setText(records.getValueAt(row, 2).toString());
+        lastNameField.setText(records.getValueAt(row, 3).toString());
+        yearLevelField.setText(records.getValueAt(row, 4).toString());
+        statusField.setText(records.getValueAt(row, 5).toString());
+    }
+}
+
+    
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {
         // Get student information from text fields
         String studentID = studentIDtxt.getText();
@@ -790,6 +827,9 @@ public class StudentGrades extends javax.swing.JFrame {
         // Set the text to the text area
         gradesArea.setText(sb.toString());
     }
+    
+    //clicked auto fill
+    
 
     
     

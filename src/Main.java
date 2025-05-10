@@ -445,7 +445,7 @@ public class Main extends javax.swing.JFrame {
           }
           studentTable.setModel(model); 
     }
-
+    //auto fill method
     private void studentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_studentTableMouseClicked
         int selectedRow = studentTable.getSelectedRow();
     
