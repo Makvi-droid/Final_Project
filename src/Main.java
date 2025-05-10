@@ -592,7 +592,9 @@ public class Main extends javax.swing.JFrame {
         for (Student student : studentArrayList) {
             if (student.getFirstName().toLowerCase().contains(searchText) ||
                 student.getLastName().toLowerCase().contains(searchText) ||
-                student.getStudentId().toLowerCase().contains(searchText)) {
+                student.getStudentId().toLowerCase().contains(searchText) ||
+                student.getStatus().toLowerCase().contains(searchText) ||
+                student.getYearLevel().toLowerCase().contains(searchText))    {
                 filteredList.add(student);
             }
         }
