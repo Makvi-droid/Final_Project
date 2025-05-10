@@ -2,6 +2,8 @@
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+import javax.swing.JOptionPane;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -69,8 +71,8 @@ public class StudentGrades extends javax.swing.JFrame {
         assignmentsMidterm = new javax.swing.JTextField();
         examMidterm = new javax.swing.JTextField();
         prelimTxt = new javax.swing.JTextField();
-        prelimBtn = new javax.swing.JToggleButton();
-        midtermBtn = new javax.swing.JButton();
+        prelimBtn = new javax.swing.JButton(); // marker2
+        midtermBtn = new javax.swing.JButton(); //marker2
         jLabel17 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         quizFinals = new javax.swing.JTextField();
@@ -82,15 +84,18 @@ public class StudentGrades extends javax.swing.JFrame {
         examFinals = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
         midtermTxt = new javax.swing.JTextField();
-        finalBtn = new javax.swing.JButton();
+        finalBtn = new javax.swing.JButton(); // marker2
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
-        prelimGrade = new javax.swing.JTextField();
-        midtermGrade = new javax.swing.JTextField();
-        finalsGrade = new javax.swing.JTextField();
+        jLabel27 = new javax.swing.JLabel();
+        prelimGrade = new javax.swing.JTextField(); // marker1
+        midtermGrade = new javax.swing.JTextField(); // marker1
+        finalsGrade = new javax.swing.JTextField(); // marker1
+        GWA = new javax.swing.JTextField(); // prelim + midterm + finals
+        gwaBtn = new javax.swing.JButton(); // for computing gwa
         registerBtn = new javax.swing.JButton();
         studentRecordsBtn = new javax.swing.JButton();
         backBtn = new javax.swing.JButton();
@@ -169,6 +174,10 @@ public class StudentGrades extends javax.swing.JFrame {
         jLabel23.setText("Midterm Grade(%):");
 
         finalBtn.setText("Calculate Final");
+        
+        gwaBtn.setText("Calculate GWA");
+        
+        
 
         javax.swing.GroupLayout gradePanelLayout = new javax.swing.GroupLayout(gradePanel);
         gradePanel.setLayout(gradePanelLayout);
@@ -316,8 +325,7 @@ public class StudentGrades extends javax.swing.JFrame {
                     .addComponent(jLabel23)
                     .addComponent(midtermTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(finalBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(finalBtn))
         );
 
         jScrollPane2.setViewportView(gradePanel);
@@ -334,6 +342,9 @@ public class StudentGrades extends javax.swing.JFrame {
 
         jLabel26.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel26.setText("Finals Grade:");
+        
+        jLabel27.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel27.setText("GWA:");
 
         registerBtn.setText("Register");
 
@@ -350,7 +361,47 @@ public class StudentGrades extends javax.swing.JFrame {
                 backBtnActionPerformed(evt);
             }
         });
+        
+        prelimBtn.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+               prelimBtnActionPerformed(evt);
+            }
+        });
+        
+        midtermBtn.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+            	midtermBtnActionPerformed(evt);
+            }
+        });
+        
+        finalBtn.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+            	finalBtnActionPerformed(evt);
+            }
+        });
 
+        gwaBtn.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+            	gwaBtnActionPerformed(evt);
+            }
+        });
+        
+        registerBtn.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+            	registerBtnActionPerformed(evt);
+            }
+        });
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -366,6 +417,9 @@ public class StudentGrades extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(finalsGrade, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(GWA, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(gwaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -454,7 +508,12 @@ public class StudentGrades extends javax.swing.JFrame {
                         .addGap(73, 73, 73)
                         .addComponent(jLabel26)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(finalsGrade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(finalsGrade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel27)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(GWA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(gwaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap(50, Short.MAX_VALUE))
@@ -475,6 +534,244 @@ public class StudentGrades extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void prelimBtnActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try
+        {
+            double quiz = Double.parseDouble(quizPrelim.getText());
+            double activities = Double.parseDouble(activitiesPrelim.getText());
+            double assignments = Double.parseDouble(assignmentPrelim.getText());
+            double exam = Double.parseDouble(examPrelim.getText());
+
+            // Calculate Prelim grade using the formula
+            double prelim = ((quiz + activities + assignments) / 2) + (exam / 2);
+
+            double prelimInt = (double) prelim;
+            prelimGrade.setText(String.valueOf(prelimInt));
+            prelimGrade.setEditable(false);
+            
+            if(jTextArea1 != null)
+            {
+            	jTextArea1.setText(null);
+            }
+            jTextArea1.setText("Prelim Grade Calculation:\n\n" +
+                    "Quiz: " + quiz + "%\n" +
+                    "Activities: " + activities + "%\n" +
+                    "Assignments: " + assignments + "%\n" +
+                    "Exam: " + exam + "%\n\n" +
+                    "Formula: ((" + quiz + " + " + activities + " + " + assignments + ") / 2) + (" + exam + "/ 2)\n\n" +
+                    "Prelim Grade: " + prelimInt);
+        }
+        catch (NumberFormatException ex)
+        {
+        	prelimGrade.setText("Invalid input!");
+        	jTextArea1.setText("Error: Invalid input for Prelim calculation.");
+        }
+    }
+    
+    private void midtermBtnActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try
+        {
+            double quiz = Double.parseDouble(quizMidterm.getText());
+            double activities = Double.parseDouble(activitiesMidterm.getText());
+            double assignments = Double.parseDouble(assignmentsMidterm.getText());
+            double exam = Double.parseDouble(examMidterm.getText());
+            double prelim = Double.parseDouble(prelimGrade.getText()); // will hold the computed prelimGrade
+            
+            //double prelimInt = (double) prelim;
+            //prelimGrade.setText(String.valueOf(prelimInt));
+            //prelimGrade.setEditable(false);
+
+            // Calculate Midterm grade using the formula
+            double midterm = ((((quiz + activities + assignments) / 2) + (exam / 2)) * 0.67) + (prelim * 0.33);
+
+            double midtermInt = (double) midterm;
+            midtermGrade.setText(String.valueOf(midtermInt));
+            midtermGrade.setEditable(false);
+            
+            if(jTextArea1 != null)
+            {
+            	jTextArea1.setText(null);
+            }
+            jTextArea1.setText("Midterm Grade Calculation:\n\n" +
+                    "Quiz: " + quiz + "%\n" +
+                    "Activities: " + activities + "%\n" +
+                    "Assignments: " + assignments + "%\n" +
+                    "Exam: " + exam + "%\n\n" +
+                    "Formula: ((" + quiz + " + " + activities + " + " + assignments + ") / 2) +"
+            		+ "(" + exam + "/ 2) + (" + prelim + " / 3)\n\n" +
+            			"Midterm Grade: " + midtermInt);
+        }
+        catch (NumberFormatException ex)
+        {
+        	midtermGrade.setText("Invalid input!");
+        	jTextArea1.setText("Error: Invalid input for Midterm calculation.");
+        }
+    }
+    
+    private void finalBtnActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try
+        {
+            double quiz = Double.parseDouble(quizFinals.getText());
+            double activities = Double.parseDouble(activitiesFinal.getText());
+            double assignments = Double.parseDouble(assignmentsFinals.getText());
+            double exam = Double.parseDouble(examFinals.getText());
+            double midterm = Double.parseDouble(midtermGrade.getText()); // will hold the computed midtermGrade
+
+            // Calculate Final grade using the formula
+            double finals = ((((quiz + activities + assignments) / 2) + (exam / 2)) * 0.67) + (midterm * 0.33);
+
+            double finalsInt = (double) finals;
+            finalsGrade.setText(String.valueOf(finalsInt));
+            finalsGrade.setEditable(false);
+            
+            jTextArea1.setText("Final Grade Calculation:\n\n" +
+                    "Quiz: " + quiz + "%\n" +
+                    "Activities: " + activities + "%\n" +
+                    "Assignments: " + assignments + "%\n" +
+                    "Exam: " + exam + "%\n\n" +
+                    "Formula: ((" + quiz + " + " + activities + " + " + assignments + ") / 2) +"
+                    		+ "(" + exam + "/ 2) + (" + midterm + " / 3)\n\n" +
+                    			"Final Grade: " + finalsInt);
+        }
+        catch (NumberFormatException ex)
+        {
+        	finalsGrade.setText("Invalid input!");
+        	jTextArea1.setText("Error: Invalid input for Finals calculation.");
+        }
+    }
+    
+    private void gwaBtnActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        try
+        {
+        	double prelim = Double.parseDouble(prelimGrade.getText());
+        	double midterm = Double.parseDouble(midtermGrade.getText());
+        	double finals = Double.parseDouble(finalsGrade.getText());
+        	
+        	double prelimInt = (double) prelim;
+            prelimGrade.setText(String.valueOf(prelimInt));
+            
+            double midtermInt = (double) midterm;
+            midtermGrade.setText(String.valueOf(midtermInt));
+            
+            double finalsInt = (double) finals;
+            finalsGrade.setText(String.valueOf(finalsInt));
+            
+            // Calculate Final grade using the formula
+            double gwa = (prelim + midterm + finals) / 3;
+            GWA.setText(String.valueOf(gwa));
+        }
+        catch (NumberFormatException ex)
+        {
+        	GWA.setText("Invalid input!");
+        	jTextArea1.setText("Error: Invalid input for GWA calculation.");
+        }
+    }
+    
+    private void  registerBtnActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            // Get all input values from form fields
+            String studentID = studentIDtxt.getText().trim();
+            String firstName = studentFirstNametxt.getText().trim();
+            String middleName = studentMiddleNametxt.getText().trim();
+            String lastName = studentLastNametxt.getText().trim();
+            String yearLevel = (yearLvl.getSelectedItem() != null) ? yearLvl.getSelectedItem().toString() : "";
+            String status = (yearLvl1.getSelectedItem() != null) ? yearLvl1.getSelectedItem().toString() : "";
+
+            // Validate required text fields
+            if (studentID.trim().isEmpty() || firstName.trim().isEmpty() || lastName.trim().isEmpty()) {
+                jTextArea1.setText("Error: Student ID, First Name, and Last Name are required fields.");
+                return;
+            }
+
+            // Validate and parse numeric grades
+            String prelimStr = prelimGrade.getText().trim();
+            String midtermStr = midtermGrade.getText().trim();
+            String finalsStr = finalsGrade.getText().trim();
+            String gwaStr = GWA.getText().trim();
+
+            if (prelimStr.isEmpty() || midtermStr.isEmpty() || finalsStr.isEmpty() || gwaStr.isEmpty()) {
+                jTextArea1.setText("Error: Please fill in all grade fields.");
+                return;
+            }
+
+            // Parse grades safely
+            double prelim = Double.parseDouble(prelimStr);
+            double midterm = Double.parseDouble(midtermStr);
+            double finals = Double.parseDouble(finalsStr);
+            double gwa = Double.parseDouble(gwaStr);
+
+            // Optional: validate grade range (0–100)
+            if (prelim < 0 || prelim > 100 || midterm < 0 || midterm > 100 ||
+                finals < 0 || finals > 100 || gwa < 0 || gwa > 100) {
+                jTextArea1.setText("Error: Grades must be between 0 and 100.");
+                return;
+            }
+
+            // Create a new Student_Records form to add the record
+            Student_Records studentRecords = new Student_Records();
+
+            // Set values to the Student_Records form fields
+            studentRecords.setStudentData(
+                studentID,
+                firstName,
+                middleName,
+                lastName,
+                yearLevel,
+                status,
+                String.format("%.2f", prelim),
+                String.format("%.2f", midterm),
+                String.format("%.2f", finals),
+                String.format("%.2f", gwa)
+            );
+
+            // Add the record to the table
+            studentRecords.addRecordToTable();
+
+            // Display success message
+            jTextArea1.setText("Student record registered successfully!\n" +
+                             "Student ID: " + studentID + "\n" +
+                             "Name: " + firstName + " " + middleName + " " + lastName + "\n" +
+                             "Final Grade: " + String.format("%.2f", gwa));
+
+        } catch (NumberFormatException ex) {
+            jTextArea1.setText("Error: Invalid input for grade calculation. Please enter numeric values for grades.");
+        } catch (Exception ex) {
+            jTextArea1.setText("Error: " + ex.getMessage());
+        }
+        
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) records.getModel();
+        String studentID = studentIDtxt.getText().trim();
+        String firstName = studentFirstNametxt.getText().trim();
+        String middleName = studentMiddleNametxt.getText().trim();
+        String lastName = studentLastNametxt.getText().trim();
+        String yearLevel = yearLvl.getSelectedItem().toString();
+        String status = yearLvl1.getSelectedItem().toString();
+
+        // Parse grades from text
+        double prelim = Double.parseDouble(prelimGrade.getText().trim());
+        double midterm = Double.parseDouble(midtermGrade.getText().trim());
+        double finals = Double.parseDouble(finalsGrade.getText().trim());
+        double gwa = Double.parseDouble(GWA.getText().trim());
+
+        // Add the values to the table model
+        model.addRow(new Object[]{
+            studentID,
+            firstName,
+            middleName,
+            lastName,
+        	yearLevel,
+            status,
+            String.format("%.2f", prelim),
+        	String.format("%.2f", midterm),
+        	String.format("%.2f", finals),
+        	String.format("%.2f", gwa)
+        });
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -521,8 +818,8 @@ public class StudentGrades extends javax.swing.JFrame {
     private javax.swing.JTextField examFinals;
     private javax.swing.JTextField examMidterm;
     private javax.swing.JTextField examPrelim;
-    private javax.swing.JButton finalBtn;
-    private javax.swing.JTextField finalsGrade;
+    private javax.swing.JButton finalBtn; // marker2
+    private javax.swing.JTextField finalsGrade; // marker1
     private javax.swing.JPanel gradePanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -543,6 +840,7 @@ public class StudentGrades extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27; // for GWA
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -554,11 +852,11 @@ public class StudentGrades extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JButton midtermBtn;
-    private javax.swing.JTextField midtermGrade;
+    private javax.swing.JButton midtermBtn; // marker2
+    private javax.swing.JTextField midtermGrade; // marker1
     private javax.swing.JTextField midtermTxt;
-    private javax.swing.JToggleButton prelimBtn;
-    private javax.swing.JTextField prelimGrade;
+    private javax.swing.JButton prelimBtn; // marker2
+    private javax.swing.JTextField prelimGrade; // marker1
     private javax.swing.JTextField prelimTxt;
     private javax.swing.JTextField quizFinals;
     private javax.swing.JTextField quizMidterm;
@@ -572,5 +870,7 @@ public class StudentGrades extends javax.swing.JFrame {
     private javax.swing.JButton studentRecordsBtn;
     private javax.swing.JComboBox<String> yearLvl;
     private javax.swing.JComboBox<String> yearLvl1;
+    private javax.swing.JTextField GWA;
+    private javax.swing.JButton gwaBtn; // for gwa
     // End of variables declaration//GEN-END:variables
 }
